@@ -1,0 +1,53 @@
+---
+interface Props {
+  text?: string;
+  textArray: string[];
+  textIndex?: number;
+  charIndex?: number;
+  typingSpeed?: number;
+  deleteSpeed?: number;
+  pauseStart?: number;
+  pauseEnd?: number;
+  cursorSpeed?: number;
+  repeatCycle?: number;
+}
+
+let {
+  text = "",
+  textArray,
+  textIndex = 0,
+  charIndex = 0,
+  typingSpeed = 50,
+  deleteSpeed = 30,
+  pauseStart = 1000,
+  pauseEnd = 2000,
+  cursorSpeed = 300,
+  repeatCycle = 0,
+  multiLine = false, // @todo
+} = Astro.props;
+
+// set defaults
+const options = {
+  text,
+  textIndex,
+  textArray,
+  charIndex,
+  typingSpeed,
+  deleteSpeed,
+  pauseStart,
+  pauseEnd,
+  cursorSpeed,
+  repeatCycle,
+  multiLine,
+};
+---
+
+<span
+  x-data={`Typewriter(${JSON.stringify(options)})`}
+  aria-label={options.textArray.join(" ")}
+  aria-hidden="true"
+>
+</span>
+<span
+  class="h-[0.8em] translate-y-[0.075em] w-3 inline-block bg-black opacity-0"
+  x-ref="cursor"></span>

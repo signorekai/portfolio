@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: 'BN Recon Grotesk';
+	src: url('/assets/fonts/BNReconGroteskRegular.woff2') format('woff2'),
+			url('/assets/fonts/BNReconGroteskRegular.woff') format('woff'),
+			url('/assets/fonts/BNReconGroteskRegular.svg#BNReconGroteskRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@layer base {
+  body {
+    @apply bg-peach-light;
+  }
+  h1 {
+    @apply font-recon-grotesk text-[2rem] leading-9 uppercase;
+  }
+
+}
+
+@layer components {
+  .wrapper {
+    @apply pt-4 mx-5 pb-2;
+  }
+
+  .viewport {
+    @apply relative w-screen h-screen overflow-hidden;
+    transition: color 0.25s;
+
+    &::before,
+    &::after {
+      @apply absolute border-solid border-transparent w-0 h-0;
+      @apply box-border;
+      content: '';
+    }
+
+    &::before {
+      @apply top-0 left-0;
+    }
+
+    &::after {
+      @apply bottom-0 right-0;
+    }
+
+    .bg {
+      @apply bg-yellow absolute top-1/2 left-1/2 rounded-full w-screen h-[100vw] -z-10;
+      @apply scale-0 -translate-x-1/2 -translate-y-1/2;
+    }
+  }
+
+  @keyframes bg-expand {
+    0% {
+      @apply scale-0;
+    }
+    100% {
+      @apply scale-125;
+    }
+  }
+
+  .viewport--active {
+    --duration: 0.5s;
+    --delay: 500ms;
+    --border-width: 8px;
+
+    .bg {
+      /* @apply scale-125 transition-all duration-1000 ease-in-out; */
+      animation: bg-expand 1.3s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+    }
+
+    &::before,
+    &::after {
+      @apply w-full h-full z-50;
+    }
+
+    &::before {
+      @apply border-t-black border-r-black;
+      border-right-width: var(--border-width);
+      border-top-width: var(--border-width);
+      transition:
+        width var(--duration) ease-out,
+        height var(--duration) ease-out var(--duration); 
+    }
+
+    &::after {
+      @apply border-b-black border-l-black;
+      border-bottom-width: var(--border-width);
+      border-left-width: var(--border-width);
+      transition:
+        border-color 0s ease-out calc(var(--duration) * 2), 
+        width var(--duration) ease-out calc(var(--duration) * 2),
+        height var(--duration) ease-out calc(var(--duration) * 3); 
+    }
+  }
+
+  .header::before {
+    content: '';
+    @apply bg-peach-light w-full h-full absolute scale-x-0 top-0 origin-right duration-700 transition-transform;
+  }
+
+  .header::after {
+    content: '';
+    @apply bg-black w-full h-2 absolute top-full scale-x-0 duration-[1500ms] origin-right transition-transform;
+  }
+
+  .header--active::before, .header--active::after {
+    @apply scale-100 ease-out;
+  }
+
+  .header--active::before {
+    @apply w-full delay-300;
+  }
+  .header--active::after {
+    /* @apply delay-300; */
+  }
+
+
+  @keyframes scrolling {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-1 * var(--marquee-width))); }
+  }
+
+  .marquee {
+    animation: scrolling var(--marquee-time) linear infinite;
+
+    &:hover {
+      animation-play-state: paused;
+    }
+  }
+  
+}
