@@ -2,7 +2,7 @@ import intersect from '@alpinejs/intersect'
 /**
  * See https://stackoverflow.com/a/24004942/11784757
  */
-const debounce = (func, wait, immediate = true) => {
+function debounce (func, wait, immediate = true) {
   let timeout
   return () => {
     const context = this
@@ -122,8 +122,8 @@ export default (Alpine) => {
 
     Alpine.data('Marquee', ({ speed = 1, spaceX = 0, dynamicWidthElements = false }) => ({
       dynamicWidthElements,
+      debouncedResize: null,
       async init() {
-        console.log(91);
         if (this.dynamicWidthElements) {
           const images = this.$el.querySelectorAll('img')
           // If there are any images, make sure they are loaded before
@@ -156,10 +156,14 @@ export default (Alpine) => {
           '--marquee-time',
           ((1 / speed) * originalWidth) / 100 + 's'
         )
-        this.resize()
+        this.resize();
+        this.debouncedResize = debounce(this.resize.bind(this), 100);
         // Make sure the resize function can only be called once every 100ms
         // Not strictly necessary but stops lag when resizing window a bit
-        window.addEventListener('resize', debounce(this.resize.bind(this), 100))
+        window.addEventListener('resize', this.debouncedResize)
+      },
+      destroy() {
+        window.removeEventListener('resize', this.debouncedResize)
       },
       async resize() {
         // Reset to original number of elements
