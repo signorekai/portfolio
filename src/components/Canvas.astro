@@ -1,0 +1,152 @@
+---
+interface Props {
+  className?: string;
+}
+
+let { className } = Astro.props;
+---
+
+<div class={`w-full h-full relative canvas ${className}`} x-data="Canvas">
+  <div class="w-full h-full relative" x-ref="container" x-ref="container">
+    <div class="w-full h-full absolute" x-bind="background" x-ref="background">
+    </div>
+    <template x-for="item in items">
+      <div class="block" x-data="Block(item)" x-bind="block" x-transition>
+        <p x-text="item.text"></p>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script>
+  import Alpine from "alpinejs";
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("Canvas", () => ({
+      items: [],
+      activeItem: null,
+      init() {
+        console.log(206);
+      },
+      background: {
+        ["@click"](event) {
+          let z = 10;
+          if (this.activeItem) {
+            z = Number(
+              window
+                .getComputedStyle(this.activeItem)
+                .getPropertyValue("z-index")
+            );
+            Alpine.$data(this.activeItem).mode = "view";
+            this.activeItem = null;
+          }
+          this.$data.items.push({
+            text: "hi",
+            top: event.offsetY,
+            left: event.offsetX,
+            zIndex: z,
+          });
+        },
+        ["@pointermove.window.throttle.17ms.passive"](event) {
+          if (this.activeItem) {
+            const $block = Alpine.$data(this.activeItem);
+            if ($block.mode === "moving") {
+              const moving = {
+                x: event.pageX - $block.clickX,
+                y: event.pageY - $block.clickY,
+              };
+              console.log(
+                "delta",
+                moving.y - $block.previousCoordinates.y,
+                moving.x - $block.previousCoordinates.x
+              );
+              // $block.delta.y = moving.y - $block.previousCoordinates.y;
+              // $block.delta.x = moving.x - $block.previousCoordinates.x;
+              window.requestAnimationFrame(() => {
+                $block.previousCoordinates = moving;
+                $block.top = moving.y;
+                $block.left = moving.x;
+              });
+            }
+          }
+        },
+      },
+    }));
+
+    Alpine.data("Block", (item) => ({
+      item,
+      mode: "view",
+      clickX: 0,
+      clickY: 0,
+      showControls: false,
+      moving: false,
+      zIndex: 10,
+      previousCoordinates: {
+        x: 0,
+        y: 0,
+      },
+      delta: {
+        x: 0,
+        y: 0,
+      },
+      ...item,
+      init() {
+        setTimeout(() => {
+          this.$el.classList.add("block--visible");
+        }, 20);
+      },
+      onSelect(event) {
+        if (this.activeItem) {
+          Alpine.$data(this.activeItem).mode = "view";
+        }
+        if (this.mode !== "moving") {
+          this.clickX = event.offsetX - this.$el.offsetWidth / 2;
+          this.clickY = event.offsetY - this.$el.offsetHeight / 2;
+          this.mode = "moving";
+          let z = this.zIndex;
+          if (this.activeItem) {
+            z = Number(
+              window
+                .getComputedStyle(this.activeItem)
+                .getPropertyValue("z-index")
+            );
+          }
+          if (this.activeItem && this.activeItem !== this.$el) {
+            this.zIndex = z + 1;
+          }
+          this.activeItem = this.$el;
+          // const itemToBeAppended = { ...this.item };
+          // console.log(98, this.items.indexOf(this.item));
+          // this.items.splice(this.items.indexOf(this.item), 1);
+          // itemToBeAppended.clickX = event.offsetX - this.$el.offsetWidth / 2;
+          // itemToBeAppended.clickY = event.offsetY - this.$el.offsetHeight / 2;
+          // itemToBeAppended.mode = "moving";
+          // console.log(103, itemToBeAppended);
+          // this.items.push(itemToBeAppended);
+        }
+      },
+      block: {
+        [":style"]() {
+          return {
+            "--top": `${this.$data.top}px`,
+            "--left": `${this.$data.left}px`,
+            "z-index": this.$data.zIndex,
+          };
+        },
+        [":class"]() {
+          return {
+            "block--selected": this.mode === "selected",
+            "block--moving": this.mode === "moving",
+          };
+        },
+        ["@pointerdown.self"](event) {
+          this.onSelect(event);
+        },
+        ["@pointerup"]() {
+          if (this.mode === "moving") {
+            this.mode = "selected";
+          }
+        },
+      },
+    }));
+  });
+</script>
