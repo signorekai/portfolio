@@ -18,6 +18,9 @@ export default {
 			boxShadow: {
 				window: '6px 6px 0px 0px #000',
 			},
+			cursor: {
+				mouse: 'url(/assets/img/cursor.svg), pointer',
+			}
 		},
 		fontFamily: {
 			aktiv: ['aktiv-grotesk-extended', ...defaultTheme.fontFamily.sans],
