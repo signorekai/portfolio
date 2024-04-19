@@ -1,0 +1,26 @@
+{
+  "isDraft": false,
+  "sortOrder": 70,
+  "title": "Pioneer Primary Story",
+  "description": "The Pioneer Primary Story is an interactive experience created to commemorate the history of Pioneer Primary School as it was set to merge with Juying Primary School in 2022 and vacate its physical premises. Sulphur was engaged to tell the story of her staff, alumni and current students as they look towards the future.",
+  "items": [{
+    "media": "videos/PPS-01.mp4",
+    "mediaType": "video/mp4",
+    "description": "Homepage",
+    "width": 679,
+    "height": 382,
+    "padding": 60,
+    "maxWidth": "240px",
+    "blockStyle": {
+      "--bg-color": "var(--green)"
+    }
+  }, {
+    "media": "img/PPS-02.png",
+    "mediaType": "image/png",
+    "description": "Homepage",
+    "width": 386,
+    "height": 840,
+    "padding": 0,
+    "maxHeight": "360px"
+  }]
+}

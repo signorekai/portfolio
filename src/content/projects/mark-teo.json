@@ -1,0 +1,31 @@
+{
+  "isDraft": false,
+  "sortOrder": 100,
+  "title": "Mark Teo Photography",
+  "description": "Interactive Design & Fullstack Development",
+  "items": [{
+    "media": "videos/MT-gallery.mp4",
+    "mediaType": "video/mp4",
+    "description": "Gallery View",
+    "width": 600,
+    "height": 330,
+    "padding": 0,
+    "maxWidth": "400px"
+  }, {
+    "media": "videos/MT-homepage.mp4",
+    "mediaType": "video/mp4",
+    "description": "Homepage View",
+    "width": 682,
+    "height": 382,
+    "padding": 16,
+    "maxWidth": "280px"
+  }, {
+    "media": "videos/MT-filters.mp4",
+    "mediaType": "video/mp4",
+    "description": "Interactive category filters",
+    "width": 386,
+    "height": 838,
+    "padding": 0,
+    "maxHeight": "418px"
+  }]
+}
