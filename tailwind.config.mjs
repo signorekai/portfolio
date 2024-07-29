@@ -25,6 +25,7 @@ export default {
 		fontFamily: {
 			aktiv: ['aktiv-grotesk-extended', ...defaultTheme.fontFamily.sans],
 			'recon-grotesk': ['BN Recon Grotesk', ...defaultTheme.fontFamily.sans],
+			platform: ['Platform', ...defaultTheme.fontFamily.sans],
 		},
 		colors: {
 			current: 'currentcolor',
@@ -34,6 +35,10 @@ export default {
 			yellow: {
 				DEFAULT: '#FFDB58',
 			},
+			olive: "#516B35",
+			green: {
+				DEFAULT: "#073F38",
+			},
 			grey: '#f5f5f5',
 			peach: {
 				DEFAULT: '#FFAE92',
@@ -42,6 +47,7 @@ export default {
 			pink: '#EE9ED3',
 			purple: {
 				DEFAULT: '#9723C9',
+				light: "#C1C5E0",
 			}
 		}
 	},
