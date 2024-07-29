@@ -12,12 +12,59 @@
 	font-display: swap;
 }
 
+
+@font-face {
+	font-family: 'Platform';
+	src: url('/assets/fonts/Platform-Bold.woff2') format('woff2'),
+			url('/assets/fonts/Platform-Bold.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Platform';
+	src: url('/assets/fonts/Platform-Regular.woff2') format('woff2'),
+			url('/assets/fonts/Platform-Regular.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Platform';
+	src: url('/assets/fonts/Platform-Light.woff2') format('woff2'),
+			url('/assets/fonts/Platform-Light.woff') format('woff');
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+
 @layer base {
   body {
+    --black: #000;
+    --white: #f9f9f9;
+    --yellow-light: #FDFD96;
+    --yellow: #ffdb58;
+    --pink: #EE9ED3;
+    --grey: #f5f5f5;
+    --peach: #ffae92;
+    --peach-light: #f8f2ed;
+    --purple: #9723c9;
+    --purple-light: #C1C5E0;
+    --green: #073f38;
+    --olive: #516b35;
+
     @apply bg-peach-light;
   }
+
   h1 {
-    @apply font-recon-grotesk text-[2rem] leading-9 uppercase;
+    @apply font-recon-grotesk text-2xl lg:text-[2rem] leading-9 uppercase;
+  }
+
+  h2 {
+    @apply font-aktiv text-xl leading-6 uppercase;
   }
 
 }
@@ -28,7 +75,7 @@
   }
 
   .viewport {
-    @apply relative w-screen h-screen overflow-hidden;
+    @apply relative w-screen h-svh overflow-hidden;
     transition: color 0.25s;
 
     &::before,
@@ -49,7 +96,7 @@
     .bg {
       @apply bg-yellow absolute top-1/2 left-1/2 rounded-full -z-10;
       @apply scale-0 -translate-x-1/2 -translate-y-1/2;
-      @apply w-[100vh] h-screen lg:w-screen lg:h-[100vw];
+      @apply portrait:w-[100vh] portrait:h-screen landscape:w-screen landscape:h-[100vw];
     }
   }
 
@@ -61,7 +108,7 @@
       @apply opacity-60;
     }
     100% {
-      @apply scale-150 opacity-100;
+      @apply scale-150 opacity-100 rounded-none;
     }
   }
 
@@ -146,36 +193,42 @@
   
   .block {
     --shadow-width: 6px;
+    --border-color: var(--black);
+    --bg-color: var(--peach);
+    --selected-border-color: var(--black);
 
     @apply absolute -translate-x-1/2 origin-center scale-0 -translate-y-1/2 opacity-0;;
-    @apply transition duration-300 ease-in-out box-content border-8 border-transparent;
+    @apply transition duration-300 ease-in-out box-content;
     
-    @apply bg-peach p-12 hover:cursor-move;
+    @apply hover:cursor-move;
+    background-color: var(--bg-color);
     top: var(--top);
     left: var(--left);
 
     &:not(.block--selected):not(.block--moving) {
 
       &:before, &:after {
+        @apply absolute pointer-events-none;
         content: "";
-        @apply bg-black absolute pointer-events-none;
+        background-color: var(--border-color);
       }
 
       &:after {
-        @apply w-[calc(100%_+_1rem)] h-2 -bottom-4 left-0;
+        @apply w-full h-2 -bottom-2 left-2;
       }
 
       &:before {
-        @apply h-[calc(100%_+_0.5rem)] w-2 -right-4 top-0;
+        @apply h-full w-2 -right-2 top-2;
       }
     }
 
     &.block--visible {
-      @apply opacity-100 p-11 scale-100;
+      @apply opacity-100 scale-50 lg:scale-100;
     }
 
     &.block--selected, &.block--moving {
-      @apply border-black z-30 p-12 ;
+      @apply z-30 border-8;
+      border-color: var(--selected-border-color);
     }
 
     &.block--moving {
@@ -185,29 +238,20 @@
     > * {
       @apply pointer-events-none;
     }
-/* 
-    [class*="shadow--"] {
-      @apply absolute bg-purple/50;
-    }
+  }
 
-    .shadow--l, .shadow--r {
-      width: var(--shadow-width);
-    }
+  .project-meta {
+    @apply absolute left-0 bottom-0 p-6 lg:px-11 lg:py-10 max-w-xs md:max-w-none;
+    z-index: 1000;
+  }
+}
 
-    .shadow--b, .shadow--t {
-      height: var(--shadow-width);
-    }
+@layer utilities {
+  [x-cloak] {
+    @apply hidden;
+  }
 
-    .shadow--l {
-      @apply top-0;
-      height: calc(100% + calc(var(--shadow-width) + 4px));
-      left: calc(calc(var(--shadow-width) * -1) - 0.25rem);
-    }
-
-    .shadow--b {
-      @apply -left-1 w-[calc(100%_+_0.5rem)];
-      width: calc(100% + var(--shadow-width));
-      bottom: calc(calc(var(--shadow-width) * -1) - 0.25rem)
-    } */
+  .project-description {
+    @apply font-platform font-light text-xl leading-5 hidden lg:block relative;
   }
 }
