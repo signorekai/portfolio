@@ -1,8 +1,23 @@
 ---
+import { getCollection } from "astro:content";
+
 import Layout from "../layouts/Layout.astro";
 import Viewport from "../components/Viewport.astro";
 import Typewriting from "../components/Typewriting.astro";
 import Canvas from "../components/Canvas.astro";
+
+const projects = await getCollection("projects");
+let items = [];
+projects.map(({ data: project, id }) => {
+  const processedItems = project.items.map((item) => ({
+    ...item,
+    projectTitle: project.title,
+    projectDescription: project.description,
+    shortProjectDescription: project.shortDescription,
+    projectSlug: id,
+  }));
+  items = [...items, ...processedItems];
+});
 ---
 
 <Layout title="Hi">
@@ -12,8 +27,8 @@ import Canvas from "../components/Canvas.astro";
       x-data="Stagger(2050, 'header--active')"
     >
       <div class="wrapper">
-        <h2
-          class="relative w-full opacity-0 transition-all duration-300 ease-out uppercase font-aktiv"
+        <h3
+          class="relative w-full opacity-0 transition-all duration-300 ease-out uppercase font-aktiv text-sm lg:text-base"
           x-data="Stagger(4000, ['opacity-100'])"
         >
           <ul
@@ -27,7 +42,7 @@ import Canvas from "../components/Canvas.astro";
             <li>Go on, I won't bite</li>
             <li>—</li>
           </ul>
-        </h2>
+        </h3>
         <h1 class="normal-case relative mt-1 z-10">
           <Typewriting
             pauseStart={4000}
@@ -37,6 +52,6 @@ import Canvas from "../components/Canvas.astro";
         </h1>
       </div>
     </div>
-    <Canvas className="flex-1" />
+    <Canvas className="flex-1" portfolio={items} />
   </Viewport>
 </Layout>
