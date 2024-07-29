@@ -1,9 +1,10 @@
 ---
 interface Props {
   className?: string;
+  portfolio: Array<object>;
 }
 
-let { className } = Astro.props;
+let { className, portfolio } = Astro.props;
 ---
 
 <div class={`w-full h-full relative canvas ${className}`} x-data="Canvas">
@@ -12,69 +13,173 @@ let { className } = Astro.props;
     </div>
     <template x-for="item in items">
       <div class="block" x-data="Block(item)" x-bind="block" x-transition>
+        <template x-if="item.mediaType === 'video/mp4'">
+          <video
+            autoplay
+            muted
+            loop
+            :class="item.customClass"
+            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
+          >
+            <source :src="`/assets/${item.media}`" :type="item.mediaType" />
+          </video>
+        </template>
+        <template x-if="item.mediaType.startsWith('image')">
+          <img
+            :class="item.customClass"
+            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
+            :src="`/assets/${item.media}`"
+            :alt="item.description"
+          />
+        </template>
         <p x-text="item.text"></p>
       </div>
     </template>
+    <div
+      x-data="Meta()"
+      x-bind="meta"
+      class="project-meta"
+      x-show="show"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 translate-y-5"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-out duration-300"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 translate-y-5"
+    >
+      <h2 x-text="title"></h2>
+      <p
+        class="font-platform font-light text-xl leading-5"
+        x-html="description"
+      >
+      </p>
+    </div>
   </div>
 </div>
 
-<script>
-  import Alpine from "alpinejs";
+<script define:vars={{ portfolio }}>
+  const getRandomInt = (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
   document.addEventListener("alpine:init", () => {
+    Alpine.store("activeElement", false);
+    Alpine.store("activeItem", false);
+
+    Alpine.data("Meta", () => ({
+      show: false,
+      title: "",
+      description: "",
+      timer: false,
+      meta: {
+        ["x-effect"]() {
+          if (this.$store.activeItem) {
+            if (this.title !== this.$store.activeItem.projectTitle) {
+              this.show = false;
+              const delay = this.title.length === 0 ? 0 : 350;
+              console.log(83, delay);
+
+              clearTimeout(this.timer);
+              this.timer = setTimeout(() => {
+                this.title = this.$store.activeItem.projectTitle;
+
+                if (this.$store.activeItem.shortProjectDescription) {
+                  this.description =
+                    this.$store.activeItem.shortProjectDescription;
+                } else if (this.$store.activeItem.projectDescription) {
+                  this.description = this.$store.activeItem.projectDescription;
+                } else {
+                  this.description = "";
+                }
+                this.show = true;
+              }, delay);
+            }
+          }
+        },
+        // ["@change-meta.window"](event) {
+        //   console.log(75, event.detail);
+        //   if (this.title.length === 0 || ) {
+        //     this.title = event.detail.projectTitle;
+        //     // this.description = event.detail.;
+        //   }
+        // },
+      },
+    }));
+
     Alpine.data("Canvas", () => ({
       items: [],
-      activeItem: null,
-      init() {
-        console.log(206);
+      onMove: function (event) {
+        if (this.$store.activeElement) {
+          const $block = Alpine.$data(this.$store.activeElement);
+          if ($block.mode === "moving") {
+            const moving = {
+              x: event.pageX - $block.clickX,
+              y: event.pageY - $block.clickY,
+            };
+            console.log(
+              "delta",
+              moving.y - $block.previousCoordinates.y,
+              moving.x - $block.previousCoordinates.x
+            );
+            // $block.delta.y = moving.y - $block.previousCoordinates.y;
+            // $block.delta.x = moving.x - $block.previousCoordinates.x;
+            window.requestAnimationFrame(() => {
+              $block.previousCoordinates = moving;
+              $block.top = moving.y;
+              $block.left = moving.x;
+            });
+          }
+        }
       },
       background: {
         ["@click"](event) {
-          let z = 10;
-          if (this.activeItem) {
-            z = Number(
-              window
-                .getComputedStyle(this.activeItem)
-                .getPropertyValue("z-index")
-            );
-            Alpine.$data(this.activeItem).mode = "view";
-            this.activeItem = null;
+          if (this.$store.activeElement) {
+            Alpine.$data(this.$store.activeElement).mode = "view";
+            this.$store.activeElement = false;
+            this.$store.activeItem = false;
           }
-          this.$data.items.push({
-            text: "hi",
-            top: event.offsetY,
-            left: event.offsetX,
-            zIndex: z,
-          });
-        },
-        ["@pointermove.window.throttle.17ms.passive"](event) {
-          if (this.activeItem) {
-            const $block = Alpine.$data(this.activeItem);
-            if ($block.mode === "moving") {
-              const moving = {
-                x: event.pageX - $block.clickX,
-                y: event.pageY - $block.clickY,
-              };
-              console.log(
-                "delta",
-                moving.y - $block.previousCoordinates.y,
-                moving.x - $block.previousCoordinates.x
-              );
-              // $block.delta.y = moving.y - $block.previousCoordinates.y;
-              // $block.delta.x = moving.x - $block.previousCoordinates.x;
-              window.requestAnimationFrame(() => {
-                $block.previousCoordinates = moving;
-                $block.top = moving.y;
-                $block.left = moving.x;
-              });
+
+          const zIndexes = this.items.map((item) => item.zIndex);
+          const highestZIndex =
+            zIndexes.length > 0 ? Math.max(...zIndexes) : 10;
+
+          if (portfolio.length > 0) {
+            const selectedIndex = getRandomInt(0, portfolio.length - 1);
+            const item = {
+              ...portfolio[selectedIndex],
+              index: this.$data.items.length,
+              top: event.offsetY,
+              left: event.offsetX,
+              zIndex: highestZIndex,
+            };
+            portfolio.splice(selectedIndex, 1);
+
+            this.$data.items.push(item);
+
+            if (
+              !!this.$store.activeItem === false ||
+              this.$store.activeItem.projectslug !== this.item.projectSlug
+            ) {
+              this.$store.activeItem = this.item;
             }
           }
+        },
+        ["@touchmove.window.throttle.17ms"](event) {
+          if (this.$store.activeElement) {
+            console.log(97, event.pageX, event.pageY);
+          }
+          this.onMove(event);
+        },
+        ["@mousemove.window.throttle.17ms.passive"](event) {
+          this.onMove(event);
         },
       },
     }));
 
     Alpine.data("Block", (item) => ({
       item,
-      mode: "view",
+      mode: "selected",
       clickX: 0,
       clickY: 0,
       showControls: false,
@@ -90,30 +195,46 @@ let { className } = Astro.props;
       },
       ...item,
       init() {
+        if (this.$store.activeElement) {
+          Alpine.$data(this.$store.activeElement).mode = "view";
+        }
+
         setTimeout(() => {
           this.$el.classList.add("block--visible");
+          this.$store.activeElement = this.$el;
+          this.$store.activeItem = this.item;
         }, 20);
       },
       onSelect(event) {
-        if (this.activeItem) {
-          Alpine.$data(this.activeItem).mode = "view";
+        if (this.$store.activeElement) {
+          Alpine.$data(this.$store.activeElement).mode = "view";
         }
+
+        this.$dispatch("change-meta", this.item);
+
+        if (
+          !!this.$store.activeItem === false ||
+          this.$store.activeItem.projectSlug !== this.item.projectSlug
+        ) {
+          this.$store.activeItem = this.item;
+        }
+
         if (this.mode !== "moving") {
           this.clickX = event.offsetX - this.$el.offsetWidth / 2;
           this.clickY = event.offsetY - this.$el.offsetHeight / 2;
           this.mode = "moving";
-          let z = this.zIndex;
-          if (this.activeItem) {
-            z = Number(
-              window
-                .getComputedStyle(this.activeItem)
-                .getPropertyValue("z-index")
-            );
+
+          const zIndexes = this.items.map((item) => item.zIndex);
+          const highestZIndex = Math.max(...zIndexes);
+
+          if (
+            this.$store.activeElement &&
+            this.$store.activeElement !== this.$el
+          ) {
+            this.items[this.index].zIndex = highestZIndex + 1;
+            this.zIndex = highestZIndex + 1;
           }
-          if (this.activeItem && this.activeItem !== this.$el) {
-            this.zIndex = z + 1;
-          }
-          this.activeItem = this.$el;
+          this.$store.activeElement = this.$el;
           // const itemToBeAppended = { ...this.item };
           // console.log(98, this.items.indexOf(this.item));
           // this.items.splice(this.items.indexOf(this.item), 1);
@@ -130,6 +251,8 @@ let { className } = Astro.props;
             "--top": `${this.$data.top}px`,
             "--left": `${this.$data.left}px`,
             "z-index": this.$data.zIndex,
+            padding: `${this.$data.item.padding}px`,
+            ...this.$data.blockStyle,
           };
         },
         [":class"]() {
@@ -139,9 +262,15 @@ let { className } = Astro.props;
           };
         },
         ["@pointerdown.self"](event) {
+          console.log(202);
           this.onSelect(event);
         },
         ["@pointerup"]() {
+          if (this.mode === "moving") {
+            this.mode = "selected";
+          }
+        },
+        ["@touchend"]() {
           if (this.mode === "moving") {
             this.mode = "selected";
           }
