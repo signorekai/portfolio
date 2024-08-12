@@ -12,14 +12,21 @@ let { className, portfolio } = Astro.props;
     <div class="w-full h-full absolute" x-bind="background" x-ref="background">
     </div>
     <template x-for="item in items">
-      <div class="block" x-data="Block(item)" x-bind="block" x-transition>
+      <div
+        class="project-block"
+        x-data="Block(item)"
+        x-bind="block"
+        x-transition
+      >
         <template x-if="item.mediaType === 'video/mp4'">
           <video
             autoplay
             muted
             loop
+            playsinline
             :class="item.customClass"
-            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
+            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto', 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
+            :src="`/assets/${item.media}`"
           >
             <source :src="`/assets/${item.media}`" :type="item.mediaType" />
           </video>
@@ -27,7 +34,7 @@ let { className, portfolio } = Astro.props;
         <template x-if="item.mediaType.startsWith('image')">
           <img
             :class="item.customClass"
-            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
+            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto' }"
             :src="`/assets/${item.media}`"
             :alt="item.description"
           />
@@ -38,7 +45,8 @@ let { className, portfolio } = Astro.props;
     <div
       x-data="Meta()"
       x-bind="meta"
-      class="project-meta"
+      class="project-meta mix-blend-difference text-yellow"
+      x-bind:class="link.length > 0 ? 'project-meta--has-link' : 'project-meta--no-link' "
       x-show="show"
       x-transition:enter="transition ease-out duration-300"
       x-transition:enter-start="opacity-0 translate-y-5"
@@ -47,12 +55,28 @@ let { className, portfolio } = Astro.props;
       x-transition:leave-start="opacity-100 translate-y-0"
       x-transition:leave-end="opacity-0 translate-y-5"
     >
-      <h2 x-text="title"></h2>
+      <h2 class="pointer-events-none" x-text="title"></h2>
       <p
-        class="font-platform font-light text-xl leading-5"
+        class="pointer-events-none font-platform font-light text-xl leading-5"
         x-html="description"
       >
       </p>
+    </div>
+    <div
+      x-data="Meta()"
+      x-bind="meta"
+      class="project-meta project-meta--button"
+      x-show="show"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 translate-y-5"
+      x-transition:enter-end="opacity-100 translate-y-0"
+      x-transition:leave="transition ease-out duration-300"
+      x-transition:leave-start="opacity-100 translate-y-0"
+      x-transition:leave-end="opacity-0 translate-y-5"
+    >
+      <template x-if="link">
+        <a x-bind:href="link"><h6 class="link-button mb-1">View project</h6></a>
+      </template>
     </div>
   </div>
 </div>
@@ -71,6 +95,7 @@ let { className, portfolio } = Astro.props;
       show: false,
       title: "",
       description: "",
+      link: "",
       timer: false,
       meta: {
         ["x-effect"]() {
@@ -92,6 +117,8 @@ let { className, portfolio } = Astro.props;
                 } else {
                   this.description = "";
                 }
+
+                this.link = this.$store.activeItem.projectLink || "";
                 this.show = true;
               }, delay);
             }
@@ -119,15 +146,24 @@ let { className, portfolio } = Astro.props;
         if (this.$store.activeElement) {
           const $block = Alpine.$data(this.$store.activeElement);
           if ($block.mode === "moving") {
-            const moving = {
+            console.log("touches?", event.touches);
+            let moving = {
               x: event.pageX - $block.clickX,
               y: event.pageY - $block.clickY,
             };
-            console.log(
-              "delta",
-              moving.y - $block.previousCoordinates.y,
-              moving.x - $block.previousCoordinates.x
-            );
+
+            if (typeof event.touches !== "undefined") {
+              moving = {
+                x: event.touches[0].pageX - $block.clickX,
+                y: event.touches[0].pageY - $block.clickY,
+              };
+            }
+
+            // console.log(
+            //   "delta",
+            //   moving.y - $block.previousCoordinates.y,
+            //   moving.x - $block.previousCoordinates.x
+            // );
             // $block.delta.y = moving.y - $block.previousCoordinates.y;
             // $block.delta.x = moving.x - $block.previousCoordinates.x;
             window.requestAnimationFrame(() => {
@@ -175,7 +211,7 @@ let { className, portfolio } = Astro.props;
         },
         ["@touchmove.window.throttle.17ms"](event) {
           if (this.$store.activeElement) {
-            console.log(97, event.pageX, event.pageY);
+            console.log(97, event.pageX, event.pageY, event);
           }
           this.onMove(event);
         },

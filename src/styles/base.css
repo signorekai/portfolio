@@ -67,6 +67,10 @@
     @apply font-aktiv text-xl leading-6 uppercase;
   }
 
+  h6 {
+    @apply font-aktiv text-base leading-5 uppercase;
+  }
+
 }
 
 @layer components {
@@ -80,7 +84,7 @@
 
     &::before,
     &::after {
-      @apply absolute border-solid border-transparent w-0 h-0;
+      @apply absolute border-solid border-transparent w-0 h-0 z-[2010];
       @apply box-border pointer-events-none;
       content: '';
     }
@@ -125,7 +129,7 @@
 
     &::before,
     &::after {
-      @apply w-full h-full z-50;
+      @apply w-full h-full z-[2010];
     }
 
     &::before {
@@ -176,9 +180,13 @@
   }
 
   .marquee {
-    animation: scrolling var(--marquee-time) linear infinite;
+    @apply inline-flex space-x-3 whitespace-nowrap max-w-full;
 
-    &:hover {
+    &.marquee--autoplay, &:not(.marquee--autoplay):hover {
+      animation: scrolling var(--marquee-time) linear infinite;
+    }
+
+    &.marquee--autopause:hover {
       animation-play-state: paused;
     }
   }
@@ -191,7 +199,36 @@
     }
   }
   
-  .block {
+  .project-meta {
+    @apply absolute max-w-[calc(100vw_-_2.5rem)] md:max-w-[calc(100vw_-_5.5rem)];
+    @apply left-5 md:left-11;
+    @apply w-full;
+    z-index: 1000;
+    
+    &.project-meta--no-link, &.project-meta--button {
+      @apply bottom-5 md:bottom-10;
+    }
+    
+    &.project-meta--has-link {
+      @apply bottom-16 lg:bottom-10;
+    }
+
+    &.project-meta--button {
+      @apply justify-center lg:justify-end flex;
+
+      h6 {
+        @apply inline-block;
+      }
+    }
+  }
+
+  .link-button {
+    @apply inline-block bg-black text-yellow rounded-full text-center mix-blend-normal pt-2 pb-1 px-6;
+    @apply transition-all duration-300 ease-in-out origin-center;
+    @apply hover:bg-purple hover:text-white hover:scale-105;
+  }
+
+  .project-block {
     --shadow-width: 6px;
     --border-color: var(--black);
     --bg-color: var(--peach);
@@ -199,13 +236,15 @@
 
     @apply absolute -translate-x-1/2 origin-center scale-0 -translate-y-1/2 opacity-0;;
     @apply transition duration-300 ease-in-out box-content;
-    
     @apply hover:cursor-move;
+    
     background-color: var(--bg-color);
     top: var(--top);
     left: var(--left);
 
     &:not(.block--selected):not(.block--moving) {
+      @apply scale-90;
+      @apply hover:scale-100;
 
       &:before, &:after {
         @apply absolute pointer-events-none;
@@ -238,11 +277,6 @@
     > * {
       @apply pointer-events-none;
     }
-  }
-
-  .project-meta {
-    @apply absolute left-0 bottom-0 p-6 lg:px-11 lg:py-10 max-w-xs md:max-w-none;
-    z-index: 1000;
   }
 }
 
