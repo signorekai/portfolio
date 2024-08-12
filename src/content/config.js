@@ -8,6 +8,7 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string(),
     shortDescription: z.string().optional(),
+    link: z.string().optional(),
     items: z.array(z.object({
       media: z.string(),
       mediaType: z.string(),
