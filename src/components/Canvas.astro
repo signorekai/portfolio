@@ -109,6 +109,12 @@ let { className, portfolio } = Astro.props;
 
     Alpine.data("Canvas", () => ({
       items: [],
+      initialised: false,
+      init() {
+        setTimeout(() => {
+          this.initialised = true;
+        }, 2000);
+      },
       onMove: function (event) {
         if (this.$store.activeElement) {
           const $block = Alpine.$data(this.$store.activeElement);
@@ -134,34 +140,36 @@ let { className, portfolio } = Astro.props;
       },
       background: {
         ["@click"](event) {
-          if (this.$store.activeElement) {
-            Alpine.$data(this.$store.activeElement).mode = "view";
-            this.$store.activeElement = false;
-            this.$store.activeItem = false;
-          }
+          if (this.initialised) {
+            if (this.$store.activeElement) {
+              Alpine.$data(this.$store.activeElement).mode = "view";
+              this.$store.activeElement = false;
+              this.$store.activeItem = false;
+            }
 
-          const zIndexes = this.items.map((item) => item.zIndex);
-          const highestZIndex =
-            zIndexes.length > 0 ? Math.max(...zIndexes) : 10;
+            const zIndexes = this.items.map((item) => item.zIndex);
+            const highestZIndex =
+              zIndexes.length > 0 ? Math.max(...zIndexes) : 10;
 
-          if (portfolio.length > 0) {
-            const selectedIndex = getRandomInt(0, portfolio.length - 1);
-            const item = {
-              ...portfolio[selectedIndex],
-              index: this.$data.items.length,
-              top: event.offsetY,
-              left: event.offsetX,
-              zIndex: highestZIndex,
-            };
-            portfolio.splice(selectedIndex, 1);
+            if (portfolio.length > 0) {
+              const selectedIndex = getRandomInt(0, portfolio.length - 1);
+              const item = {
+                ...portfolio[selectedIndex],
+                index: this.$data.items.length,
+                top: event.offsetY,
+                left: event.offsetX,
+                zIndex: highestZIndex,
+              };
+              portfolio.splice(selectedIndex, 1);
 
-            this.$data.items.push(item);
+              this.$data.items.push(item);
 
-            if (
-              !!this.$store.activeItem === false ||
-              this.$store.activeItem.projectslug !== this.item.projectSlug
-            ) {
-              this.$store.activeItem = this.item;
+              if (
+                !!this.$store.activeItem === false ||
+                this.$store.activeItem.projectslug !== this.item.projectSlug
+              ) {
+                this.$store.activeItem = this.item;
+              }
             }
           }
         },
