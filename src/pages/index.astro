@@ -14,6 +14,7 @@ projects.map(({ data: project, id }) => {
     projectTitle: project.title,
     projectDescription: project.description,
     shortProjectDescription: project.shortDescription,
+    projectLink: project.link || "",
     projectSlug: id,
   }));
   items = [...items, ...processedItems];
@@ -23,7 +24,7 @@ projects.map(({ data: project, id }) => {
 <Layout title="Hi">
   <Viewport>
     <div
-      class="fixed z-40 w-full border-black header"
+      class="fixed z-[2000] w-full border-black header"
       x-data="Stagger(2050, 'header--active')"
     >
       <div class="wrapper">
@@ -32,7 +33,8 @@ projects.map(({ data: project, id }) => {
           x-data="Stagger(4000, ['opacity-100'])"
         >
           <ul
-            class="marquee inline-flex space-x-3 whitespace-nowrap max-w-full"
+            class="marquee"
+            x-bind="container"
             x-data="Marquee({speed: 0.65})"
           >
             <li>* A.K.A SIGNOREKAI ON THE INTERNET</li>
