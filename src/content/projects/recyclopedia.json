@@ -1,0 +1,19 @@
+{
+  "isDraft": false,
+  "sortOrder": 90,
+  "title": "Recyclopedia.sg",
+  "description": "Fullstack Development",
+  "shortDescription": "Fullstack Development with Next.js and Strapi CMS.",
+  "items": [{
+    "media": "videos/RE-homepage.mp4",
+    "mediaType": "video/mp4",
+    "description": "Homepage View",
+    "width": 680,
+    "height": 382,
+    "padding": 48,
+    "maxWidth": "300px",
+    "blockStyle": {
+      "--bg-color": "var(--grey)"
+    }
+  }]
+}

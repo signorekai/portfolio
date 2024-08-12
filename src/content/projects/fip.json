@@ -1,0 +1,17 @@
+{
+  "isDraft": false,
+  "sortOrder": 120,
+  "title": "Filming in Progress",
+  "description": "Branding, Interactive Design & Frontend Development",
+  "shortDescription": "Branding, Interactive Design & Frontend Development. Built with Alpine.js, Timber & Wordpress.",
+  "link": "/projects/filming-in-progress",
+  "items": [{
+    "media": "videos/FIP-homepage.mp4",
+    "mediaType": "video/mp4",
+    "description": "Homepage View",
+    "width": 680,
+    "height": 382,
+    "padding": 0,
+    "maxWidth": "420px"
+  }]
+}

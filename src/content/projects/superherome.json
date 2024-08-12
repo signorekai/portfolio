@@ -1,0 +1,16 @@
+{
+  "isDraft": false,
+  "sortOrder": 110,
+  "title": "Superhero Me",
+  "description": "Fullstack Development",
+  "shortDescription": "Fullstack Development. Built with Astro Framework, Alpine.js and Lottie, integrated with Headless Wordpress.",
+  "items": [{
+    "media": "videos/SHM-homepage.mp4",
+    "mediaType": "video/mp4",
+    "description": "Homepage View",
+    "width": 680,
+    "height": 382,
+    "padding": 0,
+    "maxWidth": "420px"
+  }]
+}
