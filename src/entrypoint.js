@@ -120,9 +120,17 @@ export default (Alpine) => {
       },
     }))
 
-    Alpine.data('Marquee', ({ speed = 1, spaceX = 0, dynamicWidthElements = false }) => ({
+    Alpine.data('Marquee', ({ speed = 1, spaceX = 0, dynamicWidthElements = false, mode = 'autoplay', pauseWhileHover = true }) => ({
       dynamicWidthElements,
       debouncedResize: null,
+      container: {
+        [':class']() {
+          return {
+            'marquee--autoplay': mode === 'autoplay',
+            'marquee--autopause': pauseWhileHover && mode === 'autoplay',
+          }
+        }
+      },
       async init() {
         if (this.dynamicWidthElements) {
           const images = this.$el.querySelectorAll('img')
