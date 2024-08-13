@@ -20,6 +20,11 @@ export default {
 			},
 			cursor: {
 				mouse: 'url(/assets/img/cursor.svg), pointer',
+			},
+			zIndex: {
+				'max': '10000',
+				'9999': '9999',
+				'9990': '9990',
 			}
 		},
 		fontFamily: {
