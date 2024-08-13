@@ -268,6 +268,11 @@ let { className, portfolio } = Astro.props;
           this.clickY = event.offsetY - this.$el.offsetHeight / 2;
           this.mode = "moving";
 
+          if (document.body.clientWidth < 768) {
+            this.clickX = this.clickX / 2;
+            this.clickY = this.clickY / 2;
+          }
+
           const zIndexes = this.items.map((item) => item.zIndex);
           const highestZIndex = Math.max(...zIndexes);
 
