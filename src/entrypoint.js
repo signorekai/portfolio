@@ -1,4 +1,7 @@
 import intersect from '@alpinejs/intersect'
+import GraphemeSplitter from 'grapheme-splitter'
+
+
 /**
  * See https://stackoverflow.com/a/24004942/11784757
  */
@@ -53,6 +56,7 @@ export default (Alpine) => {
 
     Alpine.data('Typewriter',({ repeatCycle, text, textArray, textIndex, charIndex, typingSpeed, deleteSpeed, pauseStart, pauseEnd, cursorSpeed }) => ({
       initialText: text,
+      splitter: null,
       textArray,
       textIndex,
       charIndex,
@@ -67,11 +71,13 @@ export default (Alpine) => {
       repeatCycle,
       repeatCount: 0,
       init() {
-        console.log('INIT!');
+        this.splitter = new GraphemeSplitter();
         
         const startTyping = () => {
           const current = this.textArray[this.textIndex];
-          if (this.charIndex > current.length) {
+          const characterArray = this.splitter.splitGraphemes(current);
+
+          if (this.charIndex > characterArray.length) {
             clearInterval(this.typingInterval);
             if ((this.textArray.length - this.textIndex) === 1 && this.repeatCount <= this.repeatCycle) {
             } else {
@@ -82,7 +88,13 @@ export default (Alpine) => {
             }
           }
 
-          this.$el.innerText = current.substring(0, this.charIndex);
+          if (this.charIndex > 0) {
+            this.$el.innerText = characterArray.slice(0, this.charIndex).join("")
+          } else {
+            this.$el.innerText = "";
+          }
+
+          // this.$el.innerText = current.substring(0, this.charIndex);
           if (this.direction === 'forward'){
             this.charIndex += 1;
           } else {
