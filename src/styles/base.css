@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --duration: 0.5s;
+  --delay: 500ms;
+  --border-width: 6px;
+  --mobile-border-width: 4px;
+}
+
 @font-face {
 	font-family: 'BN Recon Grotesk';
 	src: url('/assets/fonts/BNReconGroteskRegular.woff2') format('woff2'),
@@ -60,11 +67,15 @@
   }
 
   h1 {
-    @apply font-recon-grotesk text-2xl lg:text-[2rem] leading-9 uppercase;
+    @apply font-recon-grotesk text-xl lg:text-[2rem] leading-9 uppercase;
   }
 
   h2 {
     @apply font-aktiv text-xl leading-6 uppercase;
+  }
+
+  h5 {
+    @apply font-aktiv text-xl leading-5 uppercase; 
   }
 
   h6 {
@@ -117,10 +128,6 @@
   }
 
   .viewport--active {
-    --duration: 0.5s;
-    --delay: 500ms;
-    --border-width: 8px;
-
     .bg {
       /* @apply scale-125 transition-all duration-1000 ease-in-out; */
       /* animation: bg-expand 1.3s cubic-bezier(.68,-0.55,.27,1.55) forwards; */
@@ -134,8 +141,8 @@
 
     &::before {
       @apply border-t-black border-r-black;
-      border-right-width: var(--border-width);
-      border-top-width: var(--border-width);
+      @apply border-t-mobile-border-width border-r-mobile-border-width lg:border-t-border-width lg:border-r-border-width;
+      
       transition:
         width var(--duration) ease-out,
         height var(--duration) ease-out var(--duration); 
@@ -143,8 +150,8 @@
 
     &::after {
       @apply border-b-black border-l-black;
-      border-bottom-width: var(--border-width);
-      border-left-width: var(--border-width);
+      @apply border-b-mobile-border-width border-l-mobile-border-width lg:border-b-border-width lg:border-l-border-width;
+
       transition:
         border-color 0s ease-out calc(var(--duration) * 2), 
         width var(--duration) ease-out calc(var(--duration) * 2),
@@ -159,7 +166,8 @@
 
   .header::after {
     content: '';
-    @apply bg-black w-full h-2 absolute top-full scale-x-0 duration-[1500ms] origin-right transition-transform;
+    @apply bg-black w-full absolute top-full scale-x-0 duration-[1500ms] origin-right transition-transform;
+    @apply h-mobile-border-width lg:h-border-width;
   }
 
   .header--active::before, .header--active::after {
@@ -180,7 +188,7 @@
   }
 
   .marquee {
-    @apply inline-flex space-x-3 whitespace-nowrap max-w-full;
+    @apply hidden md:inline-flex space-x-3 whitespace-nowrap max-w-full;
 
     &.marquee--autoplay, &:not(.marquee--autoplay):hover {
       animation: scrolling var(--marquee-time) linear infinite;
@@ -205,16 +213,13 @@
     @apply w-full;
     z-index: 1000;
     
-    &.project-meta--no-link, &.project-meta--button {
+    &.project-meta--no-link, &.project-meta--button, &.project-meta--has-link {
       @apply bottom-5 md:bottom-10;
-    }
-    
-    &.project-meta--has-link {
-      @apply bottom-16 lg:bottom-10;
     }
 
     &.project-meta--button {
       @apply justify-center lg:justify-end flex;
+      @apply hidden lg:flex;
 
       h6 {
         @apply inline-block;
@@ -226,6 +231,10 @@
     @apply inline-block bg-black text-yellow rounded-full text-center mix-blend-normal pt-2 pb-1 px-6;
     @apply transition-all duration-300 ease-in-out origin-center;
     @apply hover:bg-peach hover:text-black hover:scale-105;
+  }
+
+  .canvas:not(.canvas--moving) .project-block:not(.block--selected):not(.block--moving) {
+    @apply hover:lg:scale-90 hover:!z-9990;
   }
 
   .project-block {
@@ -243,8 +252,7 @@
     left: var(--left);
 
     &:not(.block--selected):not(.block--moving) {
-      @apply scale-50 lg:scale-90;
-      @apply hover:lg:scale-100 hover:!z-9990;
+      @apply scale-[0.4] md:scale-75;
 
       &:before, &:after {
         @apply absolute pointer-events-none;
@@ -253,21 +261,31 @@
       }
 
       &:after {
-        @apply w-full h-2 -bottom-2 left-2;
+        @apply w-full;
+        @apply h-mobile-border-width md:h-border-width;
+        @apply -bottom-mobile-border-width lg:-bottom-border-width;
+        @apply left-mobile-border-width lg:left-border-width;
       }
 
       &:before {
-        @apply h-full w-2 -right-2 top-2;
+        @apply h-full;
+        @apply w-mobile-border-width md:w-border-width;
+        @apply -right-mobile-border-width lg:-right-border-width;
+        @apply top-mobile-border-width lg:top-border-width;
       }
     }
 
     &.block--visible {
-      @apply opacity-100 scale-50 lg:scale-100;
+      @apply opacity-100 scale-50 md:scale-100;
     }
 
     &.block--selected, &.block--moving {
       @apply z-30 border-8;
       border-color: var(--selected-border-color);
+
+      .project-link {
+        @apply opacity-100 -translate-y-1/2 block visible lg:hidden lg:invisible;
+      }
     }
 
     &.block--moving {
@@ -276,6 +294,12 @@
 
     > * {
       @apply pointer-events-none;
+    }
+
+    .project-link {
+      @apply absolute top-1/2 left-1/2 opacity-0 translate-y-0 -translate-x-1/2 pointer-events-auto;
+      @apply transition-all duration-200 invisible;
+      @apply text-2xl;
     }
   }
 }

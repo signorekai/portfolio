@@ -29,7 +29,7 @@ projects.map(({ data: project, id }) => {
     >
       <div class="wrapper">
         <h3
-          class="relative w-full opacity-0 transition-all duration-300 ease-out uppercase font-aktiv text-sm lg:text-base"
+          class="relative opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl"
           x-data="Stagger(4000, ['opacity-100'])"
         >
           <ul
@@ -45,11 +45,13 @@ projects.map(({ data: project, id }) => {
             <li>—</li>
           </ul>
         </h3>
-        <h1 class="normal-case relative mt-1 z-10">
+        <h1
+          class="normal-case relative md:mt-1 z-10 leading-none flex flex-row flex-wrap items-center gap-x-2"
+        >
           <Typewriting
             pauseStart={4000}
             pauseEnd={3000}
-            textArray={["🙋‍♂️ MY NAME IS ALFRED", "& I MAKE DIGITAL THINGS 🛠"]}
+            textArray={["🙋‍♂️ MY NAME IS ALFRED", "& I MAKE DIGITAL THINGS"]}
           />
         </h1>
       </div>

@@ -7,8 +7,12 @@ interface Props {
 let { className, portfolio } = Astro.props;
 ---
 
-<div class={`w-full h-full relative canvas ${className}`} x-data="Canvas">
-  <div class="w-full h-full relative" x-ref="container" x-ref="container">
+<div
+  class={`w-full h-full relative canvas ${className}`}
+  x-data="Canvas"
+  x-bind:class="isMoving && 'canvas--moving'"
+>
+  <div class="w-full h-full relative" x-ref="container">
     <div class="w-full h-full absolute" x-bind="background" x-ref="background">
     </div>
     <template x-for="item in items">
@@ -18,34 +22,41 @@ let { className, portfolio } = Astro.props;
         x-bind="block"
         x-transition
       >
-        <template x-if="item.mediaType === 'video/mp4'">
-          <video
-            autoplay
-            muted
-            loop
-            playsinline
-            :class="item.customClass"
-            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto', 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
-            :src="`/assets/${item.media}`"
-          >
-            <source :src="`/assets/${item.media}`" :type="item.mediaType" />
-          </video>
-        </template>
-        <template x-if="item.mediaType.startsWith('image')">
-          <img
-            :class="item.customClass"
-            :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto' }"
-            :src="`/assets/${item.media}`"
-            :alt="item.description"
-          />
-        </template>
-        <p x-text="item.text"></p>
+        <div class="relative w-full h-full">
+          <template x-if="item.mediaType === 'video/mp4'">
+            <video
+              autoplay
+              muted
+              loop
+              playsinline
+              :class="item.customClass"
+              :style="{'aspectRatio': `${item.width} / ${item.height}`, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto', 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
+              :src="`/assets/${item.media}`"
+            >
+              <source :src="`/assets/${item.media}`" :type="item.mediaType" />
+            </video>
+          </template>
+          <template x-if="item.mediaType.startsWith('image')">
+            <img
+              :class="item.customClass"
+              :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto' }"
+              :src="`/assets/${item.media}`"
+              :alt="item.description"
+            />
+          </template>
+          <p x-text="item.text"></p>
+          <template x-if="item.projectLink">
+            <a class="project-link" x-bind:href="item.item.projectLink"
+              ><h5 class="link-button mb-1">View project</h5></a
+            >
+          </template>
+        </div>
       </div>
     </template>
     <div
       x-data="Meta()"
       x-bind="meta"
-      class="project-meta mix-blend-difference text-yellow"
+      class="project-meta mix-blend-difference text-yellow pointer-events-none"
       x-bind:class="link.length > 0 ? 'project-meta--has-link' : 'project-meta--no-link' "
       x-show="show"
       x-transition:enter="transition ease-out duration-300"
@@ -55,9 +66,9 @@ let { className, portfolio } = Astro.props;
       x-transition:leave-start="opacity-100 translate-y-0"
       x-transition:leave-end="opacity-0 translate-y-5"
     >
-      <h2 class="pointer-events-none" x-text="title"></h2>
+      <h2 class="" x-text="title"></h2>
       <p
-        class="pointer-events-none font-platform font-light text-xl leading-5"
+        class="font-platform font-light text-xl leading-5"
         x-html="description"
       >
       </p>
@@ -137,6 +148,7 @@ let { className, portfolio } = Astro.props;
     Alpine.data("Canvas", () => ({
       items: [],
       initialised: false,
+      isMoving: false,
       init() {
         setTimeout(() => {
           this.initialised = true;
@@ -269,16 +281,17 @@ let { className, portfolio } = Astro.props;
           this.mode = "moving";
 
           if (document.body.clientWidth < 768) {
-            this.clickX = this.clickX / 2;
-            this.clickY = this.clickY / 2;
+            this.clickX = this.clickX * 0.4;
+            this.clickY = this.clickY * 0.4;
           }
 
           const zIndexes = this.items.map((item) => item.zIndex);
           const highestZIndex = Math.max(...zIndexes);
 
           if (
-            this.$store.activeElement &&
-            this.$store.activeElement !== this.$el
+            (this.$store.activeElement &&
+              this.$store.activeElement !== this.$el) ||
+            this.items[this.index].zIndex <= highestZIndex
           ) {
             this.items[this.index].zIndex = highestZIndex + 1;
             this.zIndex = highestZIndex + 1;
@@ -312,15 +325,18 @@ let { className, portfolio } = Astro.props;
         },
         ["@pointerdown.self"](event) {
           console.log(202);
+          this.isMoving = true;
           this.onSelect(event);
         },
         ["@pointerup"]() {
           if (this.mode === "moving") {
+            this.isMoving = false;
             this.mode = "selected";
           }
         },
         ["@touchend"]() {
           if (this.mode === "moving") {
+            this.isMoving = false;
             this.mode = "selected";
           }
         },
