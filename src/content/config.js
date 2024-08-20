@@ -6,8 +6,8 @@ const projects = defineCollection({
     isDraft: z.boolean(),
     sortOrder: z.number(),
     title: z.string(),
-    description: z.string(),
-    shortDescription: z.string().optional(),
+    description: z.string().optional(),
+    shortDescription: z.string(),
     link: z.string().optional(),
     items: z.array(z.object({
       media: z.string(),
