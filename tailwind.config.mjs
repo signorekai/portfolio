@@ -21,6 +21,22 @@ export default {
 			cursor: {
 				mouse: 'url(/assets/img/cursor.svg), pointer',
 			},
+			borderWidth: {
+				'border-width': 'var(--border-width)',
+				'mobile-border-width': 'var(--mobile-border-width)',
+			},
+			width: {
+				'border-width': 'var(--border-width)',
+				'mobile-border-width': 'var(--mobile-border-width)',
+			},
+			height: {
+				'border-width': 'var(--border-width)',
+				'mobile-border-width': 'var(--mobile-border-width)',
+			},
+			spacing: {
+				'border-width': 'var(--border-width)',
+				'mobile-border-width': 'var(--mobile-border-width)',
+			},
 			zIndex: {
 				'max': '10000',
 				'9999': '9999',
