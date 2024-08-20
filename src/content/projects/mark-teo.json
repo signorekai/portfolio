@@ -2,7 +2,7 @@
   "isDraft": false,
   "sortOrder": 100,
   "title": "Mark Teo Photography",
-  "description": "Interactive Design & Fullstack Development. Integrated with Wordpress.",
+  "shortDescription": "Interactive Design & Fullstack Development. Integrated with Wordpress.",
   "items": [{
     "media": "videos/MT-gallery.mp4",
     "mediaType": "video/mp4",

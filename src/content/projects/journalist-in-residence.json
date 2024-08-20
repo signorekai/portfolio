@@ -1,0 +1,15 @@
+{
+  "isDraft": false,
+  "sortOrder": 130,
+  "title": "Peekaboo - Journalist in Residence",
+  "shortDescription": "Interactive Design & Frontend Development for a microsite documenting the culture of care surrounding children with disabilities",
+  "items": [{
+    "media": "img/JIR-01.png",
+    "mediaType": "image/png",
+    "description": "Gallery View",
+    "width": 500,
+    "height": 387,
+    "padding": 30,
+    "maxWidth": "300px"
+  }]
+}
