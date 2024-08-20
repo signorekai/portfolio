@@ -10,6 +10,7 @@ interface Props {
   pauseEnd?: number;
   cursorSpeed?: number;
   repeatCycle?: number;
+  multiLine?: boolean;
 }
 
 let {
@@ -49,5 +50,5 @@ const options = {
 >
 </span>
 <span
-  class="h-[0.8em] translate-y-[0.075em] w-3 inline-block bg-black opacity-0"
+  class="h-[1em] mb-[0.125em] w-2 inline-block bg-black opacity-0"
   x-ref="cursor"></span>
