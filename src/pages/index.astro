@@ -27,26 +27,22 @@ projects.map(({ data: project, id }) => {
       class="fixed z-9999 w-full border-black header"
       x-data="Stagger(2050, 'header--active')"
     >
+      <h3
+        class="relative opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
+        x-data="Stagger(4000, ['opacity-100'])"
+      >
+        <ul class="marquee" x-bind="container" x-data="Marquee({speed: 0.65})">
+          <li>* A.K.A SIGNOREKAI ON THE INTERNET</li>
+          <li>—</li>
+          <li>Get Started by clicking anywhere on the yellow box</li>
+          <li>—</li>
+          <li>Go on, I won't bite</li>
+          <li>—</li>
+        </ul>
+      </h3>
       <div class="wrapper">
-        <h3
-          class="relative opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl"
-          x-data="Stagger(4000, ['opacity-100'])"
-        >
-          <ul
-            class="marquee"
-            x-bind="container"
-            x-data="Marquee({speed: 0.65})"
-          >
-            <li>* A.K.A SIGNOREKAI ON THE INTERNET</li>
-            <li>—</li>
-            <li>Get Started by clicking anywhere on the yellow box</li>
-            <li>—</li>
-            <li>Go on, I won't bite</li>
-            <li>—</li>
-          </ul>
-        </h3>
         <h1
-          class="normal-case relative md:mt-1 z-10 leading-none flex flex-row flex-wrap items-center gap-x-2"
+          class="normal-case relative md:mt-1 z-10 leading-none flex flex-row flex-wrap items-center gap-x-2 text- outlined text-peach-light"
         >
           <Typewriting
             pauseStart={4000}
