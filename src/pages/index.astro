@@ -5,6 +5,7 @@ import Layout from "../layouts/Layout.astro";
 import Viewport from "../components/Viewport.astro";
 import Typewriting from "../components/Typewriting.astro";
 import Canvas from "../components/Canvas.astro";
+import Eyes from "../components/Eyes.astro";
 
 const projects = await getCollection("projects");
 let items = [];
@@ -21,8 +22,8 @@ projects.map(({ data: project, id }) => {
 });
 ---
 
-<Layout title="Hi">
-  <Viewport>
+<Layout title="Alfred Lau aka @signorekai">
+  <Viewport className="w-screen h-svh">
     <div
       class="fixed z-9999 w-full border-black header"
       x-data="Stagger(2050, 'header--active')"
@@ -32,22 +33,25 @@ projects.map(({ data: project, id }) => {
         x-data="Stagger(4000, ['opacity-100'])"
       >
         <ul class="marquee" x-bind="container" x-data="Marquee({speed: 0.65})">
-          <li>* A.K.A SIGNOREKAI ON THE INTERNET</li>
+          <li>* A.K.A @SIGNOREKAI ON THE INTERNET</li>
           <li>—</li>
-          <li>Get Started by clicking anywhere on the yellow box</li>
+          <li>Tap anywhere on the yellow box to get started</li>
           <li>—</li>
           <li>Go on, I won't bite</li>
           <li>—</li>
         </ul>
       </h3>
-      <div class="wrapper">
+      <div class="wrapper flex-align-middle text-peach-light gap-x-2">
+        <div class="opacity-0" x-data="Stagger(4100, 'opacity-0')">
+          <Eyes />
+        </div>
         <h1
-          class="normal-case relative md:mt-1 z-10 leading-none flex flex-row flex-wrap items-center gap-x-2 text- outlined text-peach-light"
+          class="normal-case relative z-10 leading-none outlined flex-align-middle gap-x-3"
         >
           <Typewriting
             pauseStart={4000}
             pauseEnd={3000}
-            textArray={["🙋‍♂️ MY NAME IS ALFRED", "& I MAKE DIGITAL THINGS"]}
+            textArray={["MY NAME IS ALFRED", "& I MAKE DIGITAL THINGS"]}
           />
         </h1>
       </div>
