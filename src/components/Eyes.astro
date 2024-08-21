@@ -39,7 +39,7 @@ let { className = "" } = Astro.props;
   import { throttle } from "throttle-debounce";
 
   document.addEventListener("alpine:init", () => {
-    Alpine.data("Eyes", (maxDistance = 50) => ({
+    Alpine.data("Eyes", (maxDistance = { x: 35, y: 70 }) => ({
       cursorPosition: null,
       maxDistance,
       throttledListener: null,
@@ -84,7 +84,7 @@ let { className = "" } = Astro.props;
           this.$data.vector = positionByPercentage(
             this.original.cx,
             this.original.cy,
-            this.$data.maxDistance,
+            this.$data.maxDistance.x,
             mobilePosition.x,
             mobilePosition.y
           );
@@ -93,7 +93,7 @@ let { className = "" } = Astro.props;
             this.$data.vector = positionByPercentage(
               this.original.cx,
               this.original.cy,
-              this.$data.maxDistance,
+              this.$data.maxDistance.y,
               1 - value.x,
               value.y
             );
