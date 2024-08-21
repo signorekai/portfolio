@@ -22,7 +22,10 @@
     "width": 680,
     "height": 382,
     "padding": 0,
-    "maxWidth": "360px"
+    "maxWidth": "360px",
+    "blockStyle": {
+      "--bg-color": "var(--grey)"
+    }
   }, {
     "media": "img/HOMERUN-03.png",
     "mediaType": "image/png",
@@ -30,6 +33,9 @@
     "width": 412,
     "height": 797,
     "padding": 0,
-    "maxHeight": "360px"
+    "maxHeight": "360px",
+    "blockStyle": {
+      "--bg-color": "var(--grey)"
+    }
   }]
 }

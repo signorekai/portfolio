@@ -10,7 +10,10 @@
     "width": 600,
     "height": 330,
     "padding": 0,
-    "maxWidth": "400px"
+    "maxWidth": "400px",
+    "blockStyle": {
+      "--bg-color": "var(--black)"
+    }
   }, {
     "media": "videos/MT-homepage.mp4",
     "mediaType": "video/mp4",
@@ -18,7 +21,10 @@
     "width": 682,
     "height": 382,
     "padding": 16,
-    "maxWidth": "280px"
+    "maxWidth": "280px",
+    "blockStyle": {
+      "--bg-color": "var(--black)"
+    }
   }, {
     "media": "videos/MT-filters.mp4",
     "mediaType": "video/mp4",
@@ -26,6 +32,9 @@
     "width": 386,
     "height": 838,
     "padding": 0,
-    "maxHeight": "418px"
+    "maxHeight": "418px",
+    "blockStyle": {
+      "--bg-color": "var(--black)"
+    }
   }]
 }
