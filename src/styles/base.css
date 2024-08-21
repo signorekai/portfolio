@@ -5,8 +5,21 @@
 :root {
   --duration: 0.5s;
   --delay: 500ms;
-  --border-width: 6px;
-  --mobile-border-width: 4px;
+  --border-width: 7px;
+  --mobile-border-width: 3px;
+
+  --black: #000;
+  --white: #f9f9f9;
+  --yellow-light: #FDFD96;
+  --yellow: #ffdb58;
+  --pink: #EE9ED3;
+  --grey: #f5f5f5;
+  --peach: #ffae92;
+  --peach-light: #f8f2ed;
+  --purple: #9723c9;
+  --purple-light: #C1C5E0;
+  --green: #073f38;
+  --olive: #516b35;
 }
 
 @font-face {
@@ -50,20 +63,15 @@
 
 @layer base {
   body {
-    --black: #000;
-    --white: #f9f9f9;
-    --yellow-light: #FDFD96;
-    --yellow: #ffdb58;
-    --pink: #EE9ED3;
-    --grey: #f5f5f5;
-    --peach: #ffae92;
-    --peach-light: #f8f2ed;
-    --purple: #9723c9;
-    --purple-light: #C1C5E0;
-    --green: #073f38;
-    --olive: #516b35;
-
     @apply bg-peach-light;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    &.outlined {
+      -webkit-text-stroke: 0.03em var(--black);
+      text-stroke: 0.03em var(--black);
+      text-shadow: 0.1em 0.1em 0 var(--black)
+    }
   }
 
   h1 {
@@ -71,7 +79,7 @@
   }
 
   h2 {
-    @apply font-aktiv text-xl leading-6 uppercase;
+    @apply font-aktiv text-base md:text-xl leading-6 uppercase;
   }
 
   h5 {
@@ -86,7 +94,7 @@
 
 @layer components {
   .wrapper {
-    @apply pt-4 mx-5 pb-2;
+    @apply pt-4 md:pt-2 mx-5 pb-2;
   }
 
   .viewport {
@@ -212,6 +220,11 @@
     @apply left-5 md:left-11;
     @apply w-full;
     z-index: 1000;
+
+    &.project-meta--full {
+      @apply max-w-none md:max-w-none border-t-mobile-border-width lg:border-t-border-width;
+      @apply z-9990;
+    }
     
     &.project-meta--no-link, &.project-meta--button, &.project-meta--has-link {
       @apply bottom-5 md:bottom-10;
@@ -225,16 +238,24 @@
         @apply inline-block;
       }
     }
+
+    .project-meta--header {
+      @apply flex flex-row items-center gap-x-2 w-full;
+    }
   }
 
   .link-button {
-    @apply inline-block bg-black text-yellow rounded-full text-center mix-blend-normal pt-2 pb-1 px-6;
+    @apply bg-yellow rounded-full text-center mix-blend-normal;
+    @apply items-center gap-x-1;
+    @apply pt-2 pb-1 px-6;
+    @apply border-2 border-black;
     @apply transition-all duration-300 ease-in-out origin-center;
-    @apply hover:bg-peach hover:text-black hover:scale-105;
+    @apply hover:bg-peach;
+    @apply hover:shadow-link-box hover:translate-x-1 hover:-translate-y-1;
   }
 
   .canvas:not(.canvas--moving) .project-block:not(.block--selected):not(.block--moving) {
-    @apply hover:lg:scale-90 hover:!z-9990;
+    @apply hover:lg:scale-90 hover:!z-9980;
   }
 
   .project-block {
@@ -243,8 +264,8 @@
     --bg-color: var(--peach);
     --selected-border-color: var(--black);
 
-    @apply absolute -translate-x-1/2 origin-center scale-0 -translate-y-1/2 opacity-0;;
-    @apply transition duration-300 ease-in-out box-content;
+    @apply absolute origin-center scale-0 opacity-0;;
+    @apply transition-transform duration-300 ease-in-out box-content;
     @apply hover:cursor-move;
     
     background-color: var(--bg-color);
@@ -252,7 +273,7 @@
     left: var(--left);
 
     &:not(.block--selected):not(.block--moving) {
-      @apply scale-[0.4] md:scale-75;
+      @apply scale-[0.4] md:scale-75 -translate-x-1/2 -translate-y-1/2;
 
       &:before, &:after {
         @apply absolute pointer-events-none;
@@ -262,14 +283,14 @@
 
       &:after {
         @apply w-full;
-        @apply h-mobile-border-width md:h-border-width;
+        @apply h-mobile-border-width lg:h-border-width;
         @apply -bottom-mobile-border-width lg:-bottom-border-width;
         @apply left-mobile-border-width lg:left-border-width;
       }
 
       &:before {
         @apply h-full;
-        @apply w-mobile-border-width md:w-border-width;
+        @apply w-mobile-border-width lg:w-border-width;
         @apply -right-mobile-border-width lg:-right-border-width;
         @apply top-mobile-border-width lg:top-border-width;
       }
@@ -280,7 +301,7 @@
     }
 
     &.block--selected, &.block--moving {
-      @apply z-30 border-8;
+      @apply z-30 border-border-width;
       border-color: var(--selected-border-color);
 
       .project-link {
