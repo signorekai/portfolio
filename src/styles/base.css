@@ -98,7 +98,7 @@
   }
 
   .viewport {
-    @apply relative w-screen h-svh overflow-hidden;
+    @apply relative w-full h-full  overflow-hidden;
     transition: color 0.25s;
 
     &::before,
@@ -328,6 +328,14 @@
 @layer utilities {
   [x-cloak] {
     @apply hidden;
+  }
+
+  .theme-border {
+    @apply border-mobile-border-width lg:border-border-width;
+  }
+
+  .flex-align-middle {
+    @apply flex flex-row items-center;
   }
 
   .project-description {
