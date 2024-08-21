@@ -1,26 +1,6 @@
 import intersect from '@alpinejs/intersect'
 import GraphemeSplitter from 'grapheme-splitter'
-
-
-/**
- * See https://stackoverflow.com/a/24004942/11784757
- */
-function debounce (func, wait, immediate = true) {
-  let timeout
-  return () => {
-    const context = this
-    const args = arguments
-    const callNow = immediate && !timeout
-    clearTimeout(timeout)
-    timeout = setTimeout(function () {
-      timeout = null
-      if (!immediate) {
-        func.apply(context, args)
-      }
-    }, wait)
-    if (callNow) func.apply(context, args)
-  }
-}
+import { debounce } from 'throttle-debounce';
 
 /**
  * Append the child element and wait for the parent's
@@ -46,9 +26,12 @@ export default (Alpine) => {
       init() {
         setTimeout(() => {
           if (Array.isArray(classes)){
-            this.$el.classList.add(...classes);
+            classes.every((className) => {
+              this.$el.classList.toggle(className);
+              return true;
+            })
           } else {
-            this.$el.classList.add(classes);
+            this.$el.classList.toggle(classes);
           }
         }, delay);
       }
@@ -181,7 +164,7 @@ export default (Alpine) => {
 
         this.setWidth();
         this.resize();
-        this.debouncedResize = debounce(this.resize.bind(this), 100);
+        this.debouncedResize = debounce(100, this.resize.bind(this));
         // Make sure the resize function can only be called once every 100ms
         // Not strictly necessary but stops lag when resizing window a bit
         window.addEventListener('resize', this.debouncedResize)
