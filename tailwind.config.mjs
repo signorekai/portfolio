@@ -17,6 +17,7 @@ export default {
 			},
 			boxShadow: {
 				window: '6px 6px 0px 0px #000',
+				"link-box": '-3px 4px 0px 0px var(--black)',
 			},
 			cursor: {
 				mouse: 'url(/assets/img/cursor.svg), pointer',
@@ -41,6 +42,10 @@ export default {
 				'max': '10000',
 				'9999': '9999',
 				'9990': '9990',
+				'9980': '9980',
+			},
+			strokeWidth: {
+				'40': '40px',
 			}
 		},
 		fontFamily: {
