@@ -43,11 +43,11 @@ let { className, portfolio } = Astro.props;
           </template>
           <template x-if="item.mediaType.startsWith('image')">
             <img
-              :class="item.customClass"
-              :width="item.width"
-              :height="item.height"
-              :src="`/assets/${item.media}`"
-              :alt="item.description"
+              x-bind:class="item.customClass"
+              x-bind:width="item.width"
+              x-bind:height="item.height"
+              x-bind:src="`/assets/${item.media}`"
+              x-bind:alt="item.description"
             />
           </template>
         </div>
