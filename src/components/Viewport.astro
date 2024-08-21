@@ -1,4 +1,15 @@
-<div class="viewport flex flex-col" x-data="Stagger(1500, 'viewport--active')">
+---
+interface Props {
+  className?: string;
+}
+
+let { className } = Astro.props;
+---
+
+<div
+  class={`viewport flex flex-col ${className}`}
+  x-data="Stagger(1500, 'viewport--active')"
+>
   <slot />
   <div class="bg pointer-events-none"></div>
 </div>
