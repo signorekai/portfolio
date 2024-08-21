@@ -1,4 +1,6 @@
 ---
+import Arrow from "./Arrow.astro";
+
 interface Props {
   className?: string;
   portfolio: Array<object>;
@@ -38,7 +40,10 @@ let { className, portfolio } = Astro.props;
               :class="item.customClass"
               :src="`/assets/${item.media}`"
             >
-              <source :src="`/assets/${item.media}`" :type="item.mediaType" />
+              <source
+                x-bind:src="`/assets/${item.media}`"
+                :type="item.mediaType"
+              />
             </video>
           </template>
           <template x-if="item.mediaType.startsWith('image')">
@@ -78,33 +83,15 @@ let { className, portfolio } = Astro.props;
           <h2 class="project-meta--header">
             <a
               x-bind:href="link"
-              class="group hover:pl-2 transition-all duration-150"
+              class="group flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150 hover:text-green"
             >
               <span x-text="title"></span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 scale-y-125 inline-block mb-1 rotate-45 group-hover:rotate-90 transition-transform duration-200 ease-in-out"
-                viewBox="0 0 700 700"
-              >
-                <path
-                  class="fill-current"
-                  d="M350,641.2c-13.81,0-25-11.19-25-25V132.49l-235.13,161.8c-11.38,7.83-26.94,4.95-34.77-6.42-7.83-11.37-4.95-26.94,6.42-34.77L349.64,54.85l288.84,198.75c11.37,7.83,14.25,23.39,6.42,34.77-7.83,11.37-23.39,14.25-34.77,6.42l-235.13-161.8v483.2c0,13.81-11.19,25-25,25Z"
-                ></path>
-              </svg>
+              <Arrow className="scale-y-125 lg:hidden" />
               <button
                 class="hidden lg:inline-flex link-button mb-1 group-hover:shadow-link-box group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:bg-peach"
               >
-                <span class="text-xs leading-none">View project</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 inline-block mb-1 rotate-45 group-hover:rotate-90 transition-transform duration-200 ease-in-out"
-                  viewBox="0 0 700 700"
-                >
-                  <path
-                    class="fill-current"
-                    d="M350,641.2c-13.81,0-25-11.19-25-25V132.49l-235.13,161.8c-11.38,7.83-26.94,4.95-34.77-6.42-7.83-11.37-4.95-26.94,6.42-34.77L349.64,54.85l288.84,198.75c11.37,7.83,14.25,23.39,6.42,34.77-7.83,11.37-23.39,14.25-34.77,6.42l-235.13-161.8v483.2c0,13.81-11.19,25-25,25Z"
-                  ></path>
-                </svg>
+                <span class="text-xs leading-none uppercase">View project</span>
+                <Arrow />
               </button>
             </a>
           </h2>
