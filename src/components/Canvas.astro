@@ -12,25 +12,30 @@ let { className, portfolio } = Astro.props;
   x-data="Canvas"
   x-bind:class="isMoving && 'canvas--moving'"
 >
-  <div class="w-full h-full relative" x-ref="container">
-    <div class="w-full h-full absolute" x-bind="background" x-ref="background">
+  <div class="w-full h-full relative overflow-hidden" x-ref="container">
+    <div
+      class="w-full h-full absolute flex"
+      x-bind="background"
+      x-ref="background"
+    >
     </div>
     <template x-for="item in items">
       <div
         class="project-block"
         x-data="Block(item)"
+        :style="{'aspectRatio': `${item.width} / ${item.height}`}"
         x-bind="block"
         x-transition
       >
-        <div class="relative w-full h-full">
+        <div class="relative" x-bind="mediaWrapper">
           <template x-if="item.mediaType === 'video/mp4'">
             <video
               autoplay
               muted
               loop
               playsinline
+              class="w-full h-full"
               :class="item.customClass"
-              :style="{'aspectRatio': `${item.width} / ${item.height}`, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto', 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight}"
               :src="`/assets/${item.media}`"
             >
               <source :src="`/assets/${item.media}`" :type="item.mediaType" />
@@ -39,16 +44,11 @@ let { className, portfolio } = Astro.props;
           <template x-if="item.mediaType.startsWith('image')">
             <img
               :class="item.customClass"
-              :style="{'aspectRatio': `${item.width} / ${item.height}`, 'maxWidth': item.maxWidth, 'maxHeight': item.maxHeight, 'width': item.maxWidth !== 'fit-content' ? item.maxWidth : 'auto', 'height': item.maxHeight !== 'fit-content' ? item.maxHeight : 'auto' }"
+              :width="item.width"
+              :height="item.height"
               :src="`/assets/${item.media}`"
               :alt="item.description"
             />
-          </template>
-          <p x-text="item.text"></p>
-          <template x-if="item.projectLink">
-            <a class="project-link" x-bind:href="item.item.projectLink"
-              ><h5 class="link-button mb-1">View project</h5></a
-            >
           </template>
         </div>
       </div>
@@ -56,38 +56,63 @@ let { className, portfolio } = Astro.props;
     <div
       x-data="Meta()"
       x-bind="meta"
-      class="project-meta mix-blend-difference text-yellow pointer-events-none"
-      x-bind:class="link.length > 0 ? 'project-meta--has-link' : 'project-meta--no-link' "
+      x-cloak
       x-show="show"
       x-transition:enter="transition ease-out duration-300"
-      x-transition:enter-start="opacity-0 translate-y-5"
+      x-transition:enter-start="opacity-0 translate-y-10"
       x-transition:enter-end="opacity-100 translate-y-0"
       x-transition:leave="transition ease-out duration-300"
       x-transition:leave-start="opacity-100 translate-y-0"
-      x-transition:leave-end="opacity-0 translate-y-5"
+      x-transition:leave-end="opacity-0 translate-y-10"
+      class="project-meta project-meta--full flex flex-row left-0 bottom-0 p-4 pt-3 bg-peach-light"
     >
-      <h2 class="" x-text="title"></h2>
-      <p
-        class="font-platform font-light text-xl leading-5"
-        x-html="description"
-      >
-      </p>
-    </div>
-    <div
-      x-data="Meta()"
-      x-bind="meta"
-      class="project-meta project-meta--button"
-      x-show="show"
-      x-transition:enter="transition ease-out duration-300"
-      x-transition:enter-start="opacity-0 translate-y-5"
-      x-transition:enter-end="opacity-100 translate-y-0"
-      x-transition:leave="transition ease-out duration-300"
-      x-transition:leave-start="opacity-100 translate-y-0"
-      x-transition:leave-end="opacity-0 translate-y-5"
-    >
-      <template x-if="link">
-        <a x-bind:href="link"><h6 class="link-button mb-1">View project</h6></a>
-      </template>
+      <div class="flex-1">
+        <template x-if="link">
+          <h2 class="project-meta--header">
+            <a
+              x-bind:href="link"
+              class="group hover:pl-2 transition-all duration-150"
+            >
+              <span x-text="title"></span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 scale-y-125 inline-block mb-1 rotate-45 group-hover:rotate-90 transition-transform duration-200 ease-in-out"
+                viewBox="0 0 700 700"
+              >
+                <path
+                  class="fill-current"
+                  d="M350,641.2c-13.81,0-25-11.19-25-25V132.49l-235.13,161.8c-11.38,7.83-26.94,4.95-34.77-6.42-7.83-11.37-4.95-26.94,6.42-34.77L349.64,54.85l288.84,198.75c11.37,7.83,14.25,23.39,6.42,34.77-7.83,11.37-23.39,14.25-34.77,6.42l-235.13-161.8v483.2c0,13.81-11.19,25-25,25Z"
+                ></path>
+              </svg>
+              <button
+                class="hidden lg:inline-flex link-button mb-1 group-hover:shadow-link-box group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:bg-peach"
+              >
+                <span class="text-xs leading-none">View project</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4 inline-block mb-1 rotate-45 group-hover:rotate-90 transition-transform duration-200 ease-in-out"
+                  viewBox="0 0 700 700"
+                >
+                  <path
+                    class="fill-current"
+                    d="M350,641.2c-13.81,0-25-11.19-25-25V132.49l-235.13,161.8c-11.38,7.83-26.94,4.95-34.77-6.42-7.83-11.37-4.95-26.94,6.42-34.77L349.64,54.85l288.84,198.75c11.37,7.83,14.25,23.39,6.42,34.77-7.83,11.37-23.39,14.25-34.77,6.42l-235.13-161.8v483.2c0,13.81-11.19,25-25,25Z"
+                  ></path>
+                </svg>
+              </button>
+            </a>
+          </h2>
+        </template>
+        <template x-if="link.length === 0">
+          <h2 class="project-meta--header">
+            <span x-text="title"></span>
+          </h2>
+        </template>
+        <p
+          class="font-platform font-light text-xl leading-5"
+          x-html="description"
+        >
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -114,7 +139,6 @@ let { className, portfolio } = Astro.props;
             if (this.title !== this.$store.activeItem.projectTitle) {
               this.show = false;
               const delay = this.title.length === 0 ? 0 : 350;
-              console.log(83, delay);
 
               clearTimeout(this.timer);
               this.timer = setTimeout(() => {
@@ -307,12 +331,37 @@ let { className, portfolio } = Astro.props;
           // this.items.push(itemToBeAppended);
         }
       },
+      mediaWrapper: {
+        [":style"]() {
+          let ratio = 1;
+
+          if (this.$data.item.maxWidth !== "fit-content") {
+            ratio =
+              parseInt(this.$data.item.maxWidth) /
+              parseInt(this.$data.item.width);
+          } else if (this.$data.item.maxHeight !== "fit-content") {
+            ratio =
+              parseInt(this.$data.item.maxHeight) /
+              parseInt(this.$data.item.height);
+          }
+
+          return {
+            aspectRatio: `${this.$data.item.width} / ${this.$data.item.height}`,
+            width: `${this.$data.item.width * ratio}px`,
+            height: `${this.$data.item.height * ratio}px`,
+          };
+        },
+      },
       block: {
         [":style"]() {
           return {
             "--top": `${this.$data.top}px`,
             "--left": `${this.$data.left}px`,
             "z-index": this.$data.zIndex,
+            "--tw-translate-x": "-50%",
+            "--tw-translate-y": "-50%",
+            transform:
+              "translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))",
             padding: `${this.$data.item.padding}px`,
             ...this.$data.blockStyle,
           };
