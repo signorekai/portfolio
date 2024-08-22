@@ -22,6 +22,12 @@
   --olive: #516b35;
 }
 
+@keyframes svg-animation {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @font-face {
 	font-family: 'BN Recon Grotesk';
 	src: url('/assets/fonts/BNReconGroteskRegular.woff2') format('woff2'),
@@ -329,6 +335,11 @@
   .eyes {
     @apply w-5 h-5 lg:w-8 lg:h-8 relative mb-[1px];
 
+    .cancel-stroke {
+      stroke-dasharray: 100000;
+      stroke-dashoffset: 100000;
+    }
+
     .left-pupil-x, .right-pupil-x {
       @apply opacity-0;
     }
@@ -345,6 +356,11 @@
   }
 
   .eyes--empty {
+    
+    .cancel-stroke {
+      animation: svg-animation 2s ease-in forwards;
+    }
+
     .left-pupil, .right-pupil {
       @apply opacity-0;
     }
@@ -354,7 +370,7 @@
     }
 
     .right-eye-shadow, .left-eye-shadow {
-      @apply fill-olive-light;
+      @apply fill-peach-light;
     }
 
     .left-pupil-x, .right-pupil-x {
