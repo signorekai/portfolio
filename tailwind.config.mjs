@@ -62,7 +62,10 @@ export default {
 			yellow: {
 				DEFAULT: '#FFDB58',
 			},
-			olive: "#516B35",
+			olive: {
+				DEFAULT:"#516B35",
+				light: "#929B87",
+			},
 			green: {
 				DEFAULT: "#073F38",
 			},
