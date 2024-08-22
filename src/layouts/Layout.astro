@@ -23,11 +23,13 @@ const { title = "" } = Astro.props;
   </head>
   <body>
     <div
-      class="fixed z-9999 transition-transform duration-0 translate-x-0 translate-y-0 pointer-events-none"
+      class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
       x-bind="cursor"
       x-data="Cursor"
     >
       <Eyes
+        watchMobileCanvasMove={false}
+        watchEmptyCanvas={true}
         reverse={true}
         className="-translate-x-1/2 -translate-y-1/2 hidden lg:block lg:!w-20 lg:!h-20 text-peach-light"
       />
@@ -40,26 +42,45 @@ const { title = "" } = Astro.props;
   import Alpine from "alpinejs";
   document.addEventListener("alpine:init", () => {
     Alpine.data("Cursor", () => ({
-      cursorPosition: { x: 0, y: 0 },
+      initialised: false,
+      init() {
+        this.$el.classList.remove("opacity-0");
+        setTimeout(() => {
+          this.$el.classList.remove("duration-250", "transition-opacity");
+          this.$el.classList.add("duration-0", "transition-transform");
+        }, 300);
+
+        setTimeout(() => {
+          this.initialised = true;
+        }, 2000);
+      },
+      cursorPosition: {
+        x: document.documentElement.clientWidth / 2 || 0,
+        y: document.documentElement.clientHeight / 2 || 0,
+      },
       throttledListener: null,
       cursor: {
         ["@mousemove.window.throttle.16ms.passive"](e) {
-          this.$data.cursorPosition.x = e.clientX;
-          this.$data.cursorPosition.y = e.clientY;
+          if (this.initialised) {
+            this.$data.cursorPosition.x = e.clientX;
+            this.$data.cursorPosition.y = e.clientY;
+          }
         },
         ["@cursor-change.camel.window"]({ detail }) {
-          if (detail.hasOwnProperty("className")) {
-            if (detail.className.hasOwnProperty("toggle")) {
-              detail.className.toggle.every((className) => {
-                this.$el.classList.toggle(className);
-                return true;
-              });
-            }
-            if (detail.className.hasOwnProperty("add")) {
-              this.$el.classList.add(...detail.className.add);
-            }
-            if (detail.className.hasOwnProperty("remove")) {
-              this.$el.classList.remove(...detail.className.remove);
+          if (this.initialised) {
+            if (detail.hasOwnProperty("className")) {
+              if (detail.className.hasOwnProperty("toggle")) {
+                detail.className.toggle.every((className) => {
+                  this.$el.classList.toggle(className);
+                  return true;
+                });
+              }
+              if (detail.className.hasOwnProperty("add")) {
+                this.$el.classList.add(...detail.className.add);
+              }
+              if (detail.className.hasOwnProperty("remove")) {
+                this.$el.classList.remove(...detail.className.remove);
+              }
             }
           }
         },
