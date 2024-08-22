@@ -151,15 +151,11 @@ let { className, portfolio } = Astro.props;
                 this.show = true;
               }, delay);
             }
+          } else {
+            this.$store.activeItem =
+              this.$store.items[this.$store.items.length - 1];
           }
         },
-        // ["@change-meta.window"](event) {
-        //   console.log(75, event.detail);
-        //   if (this.title.length === 0 || ) {
-        //     this.title = event.detail.projectTitle;
-        //     // this.description = event.detail.;
-        //   }
-        // },
       },
     }));
 
@@ -285,8 +281,6 @@ let { className, portfolio } = Astro.props;
         if (this.$store.activeElement) {
           Alpine.$data(this.$store.activeElement).mode = "view";
         }
-
-        this.$dispatch("change-meta", this.item);
 
         if (
           !!this.$store.activeItem === false ||
