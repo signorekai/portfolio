@@ -1,0 +1,19 @@
+{
+  "isDraft": false,
+  "sortOrder": 140,
+  "title": "Liuying.me",
+  "description": "Liuying.me is a portfolio site for a fine arts photographer.",
+  "shortDescription": "Interactive Design, Frontend Development & Wordpress. Built with Timber & Barba.js.",
+  "items": [{
+    "media": "videos/LY-001.mp4",
+    "mediaType": "video/mp4",
+    "description": "Interactive map showcasing Alfred's memories around the neighbourhood",
+    "width": 680,
+    "height": 382,
+    "padding": 60,
+    "maxWidth": "240px",
+    "blockStyle": {
+      "--bg-color": "var(--grey)"
+    }
+  }]
+}
