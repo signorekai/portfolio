@@ -40,8 +40,8 @@ let { className = "" } = Astro.props;
 
   document.addEventListener("alpine:init", () => {
     Alpine.data("Eyes", (maxDistance = { x: 35, y: 70 }) => ({
-      cursorPosition: null,
       maxDistance,
+      cursorPosition: null,
       throttledListener: null,
       listener(e) {
         const dimensions = {
