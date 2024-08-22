@@ -50,23 +50,27 @@ let { className = "", reverse = false } = Astro.props;
 
 <script>
   import Alpine from "alpinejs";
-  import { throttle } from "throttle-debounce";
 
   document.addEventListener("alpine:init", () => {
     Alpine.data("Eyes", (maxDistance = { x: 35, y: 70 }) => ({
       maxDistance,
       cursorPosition: null,
+      handleMove(x, y) {
+        const dimensions = {
+          width: document.documentElement.clientWidth,
+          height: document.documentElement.clientHeight,
+        };
+        return {
+          x: x / dimensions.width,
+          y: y / dimensions.height,
+        };
+      },
       eyes: {
+        ["@mobile-canvas-move.camel.window.throttle.16ms"]({ detail }) {
+          this.$data.cursorPosition = this.handleMove(detail.x, detail.y);
+        },
         ["@mousemove.window.throttle.16ms.passive"](e) {
-          const dimensions = {
-            width: document.documentElement.clientWidth,
-            height: document.documentElement.clientHeight,
-          };
-
-          this.$data.cursorPosition = {
-            x: e.clientX / dimensions.width,
-            y: e.clientY / dimensions.height,
-          };
+          this.$data.cursorPosition = this.handleMove(e.clientX, e.clientY);
         },
       },
     }));
@@ -98,17 +102,17 @@ let { className = "", reverse = false } = Astro.props;
             mobilePosition.x,
             mobilePosition.y
           );
-        } else {
-          this.$watch("cursorPosition", (value) => {
-            this.$data.vector = positionByPercentage(
-              this.original.cx,
-              this.original.cy,
-              this.$data.maxDistance.y,
-              this.reverse ? value.x : 1 - value.x,
-              this.reverse ? 1 - value.y : value.y
-            );
-          });
         }
+
+        this.$watch("cursorPosition", (value) => {
+          this.$data.vector = positionByPercentage(
+            this.original.cx,
+            this.original.cy,
+            this.$data.maxDistance.y,
+            this.reverse ? value.x : 1 - value.x,
+            this.reverse ? 1 - value.y : value.y
+          );
+        });
       },
       eye: {
         [":cx"]() {

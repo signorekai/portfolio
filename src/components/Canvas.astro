@@ -187,6 +187,11 @@ let { className, portfolio } = Astro.props;
                 x: event.touches[0].pageX - $block.clickX,
                 y: event.touches[0].pageY - $block.clickY,
               };
+
+              this.$dispatch("mobileCanvasMove", {
+                x: event.touches[0].pageX,
+                y: event.touches[0].pageY,
+              });
             }
 
             // console.log(
