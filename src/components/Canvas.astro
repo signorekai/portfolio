@@ -228,8 +228,11 @@ let { className, portfolio } = Astro.props;
                 zIndex: highestZIndex,
               };
               portfolio.splice(selectedIndex, 1);
-
               this.$data.items.push(item);
+
+              if (portfolio.length === 0) {
+                this.$dispatch("emptyCanvas");
+              }
 
               if (
                 !!this.$store.activeItem === false ||
@@ -237,6 +240,8 @@ let { className, portfolio } = Astro.props;
               ) {
                 this.$store.activeItem = this.item;
               }
+            } else {
+              this.$dispatch("emptyCanvas");
             }
           }
         },
