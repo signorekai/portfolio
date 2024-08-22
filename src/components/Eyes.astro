@@ -1,33 +1,47 @@
 ---
 interface Props {
   className?: string;
+  reverse?: boolean;
 }
 
-let { className = "" } = Astro.props;
+let { className = "", reverse = false } = Astro.props;
 ---
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  class={`w-5 h-5 lg:w-8 lg:h-8 relative mb-[1px] ${className}`}
+  class={`eyes ${className}`}
   x-data="Eyes"
+  x-bind="eyes"
   viewBox="0 0 700 700"
 >
   <path
+    class="stroke-black left-eye-outline"
     d="M181.5,84c15.15,0,30.21,6.19,44.76,18.39,15.31,12.84,29.85,32.41,42.04,56.58,12.82,25.42,22.92,55.19,30.02,88.46,7.43,34.82,11.19,71.85,11.19,110.07s-3.77,75.26-11.19,110.07c-7.1,33.27-17.2,63.04-30.02,88.46-12.19,24.17-26.73,43.74-42.04,56.58-14.55,12.2-29.6,18.39-44.76,18.39s-30.21-6.19-44.76-18.39c-15.31-12.84-29.85-32.41-42.04-56.58-12.82-25.42-22.92-55.19-30.02-88.46-7.43-34.82-11.19-71.85-11.19-110.07s3.77-75.26,11.19-110.07c7.1-33.27,17.2-63.04,30.02-88.46,12.19-24.17,26.73-43.74,42.04-56.58,14.55-12.2,29.6-18.39,44.76-18.39M181.5,64c-81.74,0-148,131.4-148,293.5s66.26,293.5,148,293.5,148-131.4,148-293.5S263.24,64,181.5,64h0Z"
   ></path>
   <path
+    class="stroke-black right-eye-outline"
     d="M509.5,84c15.15,0,30.21,6.19,44.76,18.39,15.31,12.84,29.85,32.41,42.04,56.58,12.82,25.42,22.92,55.19,30.02,88.46,7.43,34.82,11.19,71.85,11.19,110.07s-3.77,75.26-11.19,110.07c-7.1,33.27-17.2,63.04-30.02,88.46-12.19,24.17-26.73,43.74-42.04,56.58-14.55,12.2-29.6,18.39-44.76,18.39s-30.21-6.19-44.76-18.39c-15.31-12.84-29.85-32.41-42.04-56.58-12.82-25.42-22.92-55.19-30.02-88.46-7.43-34.82-11.19-71.85-11.19-110.07s3.77-75.26,11.19-110.07c7.1-33.27,17.2-63.04,30.02-88.46,12.19-24.17,26.73-43.74,42.04-56.58,14.55-12.2,29.6-18.39,44.76-18.39M509.5,64c-81.74,0-148,131.4-148,293.5s66.26,293.5,148,293.5,148-131.4,148-293.5-66.26-293.5-148-293.5h0Z"
   ></path>
+  <path
+    class="fill-current left-eye-sclera"
+    d="M181.5,641c-35.56,0-69.56-28.58-95.72-80.47-27.26-54.07-42.28-126.17-42.28-203.03s15.01-148.97,42.28-203.03c26.17-51.89,60.16-80.47,95.72-80.47s69.56,28.58,95.72,80.47c27.26,54.06,42.28,126.17,42.28,203.03s-15.01,148.97-42.28,203.03c-26.17,51.89-60.16,80.47-95.72,80.47Z"
+  ></path>
+  <path
+    class="fill-current right-eye-sclera"
+    d="M509.5,641c-35.56,0-69.56-28.58-95.72-80.47-27.26-54.07-42.28-126.17-42.28-203.03s15.01-148.97,42.28-203.03c26.17-51.89,60.16-80.47,95.72-80.47s69.56,28.58,95.72,80.47c27.26,54.06,42.28,126.17,42.28,203.03s-15.01,148.97-42.28,203.03c-26.17,51.89-60.16,80.47-95.72,80.47Z"
+  ></path>
   <ellipse
+    class="left-pupil"
     x-bind="eye"
-    x-data="Eye({mobilePosition: {x: 0, y: 0.6}})"
+    x-data={`Eye({mobilePosition: {x: 0, y: 0.6}, reverse: ${reverse}})`}
     cx="181.5"
     cy="357.5"
     rx="52.2"
     ry="141"></ellipse>
   <ellipse
+    class="right-pupil"
     x-bind="eye"
-    x-data="Eye({mobilePosition: {x: 0, y: 0.6}})"
+    x-data={`Eye({mobilePosition: {x: 0, y: 0.6}, reverse: ${reverse}})`}
     cx="509.5"
     cy="357.5"
     rx="52.2"
@@ -42,28 +56,23 @@ let { className = "" } = Astro.props;
     Alpine.data("Eyes", (maxDistance = { x: 35, y: 70 }) => ({
       maxDistance,
       cursorPosition: null,
-      throttledListener: null,
-      listener(e) {
-        const dimensions = {
-          width: document.documentElement.clientWidth,
-          height: document.documentElement.clientHeight,
-        };
+      eyes: {
+        ["@mousemove.window.throttle.16ms.passive"](e) {
+          const dimensions = {
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+          };
 
-        this.$data.cursorPosition = {
-          x: e.clientX / dimensions.width,
-          y: e.clientY / dimensions.height,
-        };
-      },
-      init() {
-        this.throttledListener = throttle(17, this.listener.bind(this));
-        window.addEventListener("mousemove", this.throttledListener);
-      },
-      destroy() {
-        window.removeEventListener("mousemove", this.throttledListener);
+          this.$data.cursorPosition = {
+            x: e.clientX / dimensions.width,
+            y: e.clientY / dimensions.height,
+          };
+        },
       },
     }));
 
-    Alpine.data("Eye", ({ mobilePosition }) => ({
+    Alpine.data("Eye", ({ mobilePosition, reverse }) => ({
+      reverse,
       original: null,
       vector: null,
       init() {
@@ -80,6 +89,7 @@ let { className = "" } = Astro.props;
           const newY = cy - radius * Math.cos(py * Math.PI);
           return { cx: newX, cy: newY };
         };
+
         if (isMobile) {
           this.$data.vector = positionByPercentage(
             this.original.cx,
@@ -94,8 +104,8 @@ let { className = "" } = Astro.props;
               this.original.cx,
               this.original.cy,
               this.$data.maxDistance.y,
-              1 - value.x,
-              value.y
+              this.reverse ? value.x : 1 - value.x,
+              this.reverse ? 1 - value.y : value.y
             );
           });
         }
