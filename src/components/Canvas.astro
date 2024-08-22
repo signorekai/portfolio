@@ -239,10 +239,7 @@ let { className, portfolio } = Astro.props;
             }
           }
         },
-        ["@touchmove.window.throttle.17ms"](event) {
-          if (this.$store.activeElement) {
-            console.log(97, event.pageX, event.pageY, event);
-          }
+        ["@touchmove.window.throttle.17ms.passive"](event) {
           this.onMove(event);
         },
         ["@mousemove.window.throttle.17ms.passive"](event) {
