@@ -10,11 +10,12 @@ let { className, portfolio } = Astro.props;
 ---
 
 <div
-  class={`w-full h-full relative canvas ${className}`}
+  class={`w-full h-svh relative canvas ${className}`}
   x-data="Canvas"
   x-bind:class="isMoving && 'canvas--moving'"
 >
-  <div class="w-full h-full relative overflow-hidden" x-ref="container">
+  <div class="w-full h-svh relative overflow-hidden" x-ref="container">
+    <div class="bg pointer-events-none"></div>
     <div
       class="w-full h-full absolute flex"
       x-bind="background"
@@ -59,7 +60,7 @@ let { className, portfolio } = Astro.props;
       </div>
     </template>
     <div
-      class="opacity-0 translate-y-4 lg:hidden transition-all duration-300 w-full pt-2 pb-1 px-4 absolute bottom-0 left-0 z-20 bg-peach-light theme-border"
+      class="opacity-0 translate-y-4 lg:hidden transition-all duration-300 w-full pt-2 pb-1 px-4 absolute bottom-0 left-0 z-20 bg-peach-light theme-border !border-b-0"
       x-bind:class="items.length !== 0 && 'translate-y-full !opacity-0'"
       x-data="Stagger(2000, ['opacity-0', 'translate-y-4'])"
     >
@@ -151,9 +152,6 @@ let { className, portfolio } = Astro.props;
                 this.show = true;
               }, delay);
             }
-          } else {
-            this.$store.activeItem =
-              this.$store.items[this.$store.items.length - 1];
           }
         },
       },
@@ -172,7 +170,6 @@ let { className, portfolio } = Astro.props;
         if (this.$store.activeElement) {
           const $block = Alpine.$data(this.$store.activeElement);
           if ($block.mode === "moving") {
-            console.log("touches?", event.touches);
             let moving = {
               x: event.pageX - $block.clickX,
               y: event.pageY - $block.clickY,
@@ -396,17 +393,20 @@ let { className, portfolio } = Astro.props;
               add: ["cursor--hidden"],
             },
           });
+          this.$dispatch("hideOverflow");
         },
         ["@pointerup"]() {
           if (this.mode === "moving") {
             this.isMoving = false;
             this.mode = "selected";
+            this.$dispatch("showOverflow");
           }
         },
         ["@touchend"]() {
           if (this.mode === "moving") {
             this.isMoving = false;
             this.mode = "selected";
+            this.$dispatch("showOverflow");
           }
         },
       },
