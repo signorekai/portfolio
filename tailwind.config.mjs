@@ -20,7 +20,8 @@ export default {
 				"link-box": '-3px 4px 0px 0px var(--black)',
 			},
 			cursor: {
-				mouse: 'url(/assets/img/cursor.svg), pointer',
+				move: 'url(/assets/img/cursor-move.svg) 32 32, move',
+				moving: 'url(/assets/img/cursor-moving.svg) 12 6, pointer',
 			},
 			borderWidth: {
 				'border-width': 'var(--border-width)',
