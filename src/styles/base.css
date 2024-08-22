@@ -68,6 +68,12 @@
 
 
 @layer base {
+  html.lock-scroll {
+    .body-wrapper {
+      @apply overflow-y-hidden fixed w-full;
+    }
+  }
+
   body {
     @apply bg-peach-light;
     @apply cursor-moving lg:cursor-none;
@@ -105,7 +111,8 @@
   }
 
   .viewport {
-    @apply relative w-full h-full  overflow-hidden;
+    @apply fixed w-full min-h-dvh overflow-hidden z-max;
+    @apply pointer-events-none;
     transition: color 0.25s;
 
     &::before,
@@ -122,12 +129,16 @@
     &::after {
       @apply bottom-0 right-0;
     }
+  }
 
-    .bg {
-      @apply bg-yellow absolute top-1/2 left-1/2 rounded-full -z-10;
-      @apply scale-0 -translate-x-1/2 -translate-y-1/2;
-      @apply portrait:w-[100vh] portrait:h-screen landscape:w-screen landscape:h-[100vw];
+  .viewport-screen {
+    @apply w-full min-h-svh lg:min-h-0 lg:h-screen;
+
+    & + .viewport-screen {
+      @apply border-t-mobile-border-width lg:border-t-border-width;
+      @apply border-black;
     }
+
   }
 
   @keyframes bg-expand {
@@ -143,12 +154,6 @@
   }
 
   .viewport--active {
-    .bg {
-      /* @apply scale-125 transition-all duration-1000 ease-in-out; */
-      /* animation: bg-expand 1.3s cubic-bezier(.68,-0.55,.27,1.55) forwards; */
-      animation: bg-expand 1.3s cubic-bezier(.33,-0.47,.27,1.55) forwards;
-    }
-
     &::before,
     &::after {
       @apply w-full h-full z-max;
@@ -219,6 +224,16 @@
 
     [x-bind="background"] {
       @apply hover:cursor-none;
+    }
+
+    .bg {
+      /* @apply scale-125 transition-all duration-1000 ease-in-out; */
+      /* animation: bg-expand 1.3s cubic-bezier(.68,-0.55,.27,1.55) forwards; */
+      animation: bg-expand 2s cubic-bezier(.33,-0.47,.27,1.55) forwards;
+
+      @apply bg-yellow absolute top-1/2 left-1/2 rounded-full -z-10;
+      @apply scale-0 -translate-x-1/2 -translate-y-1/2;
+      @apply portrait:w-[100vh] portrait:h-screen landscape:w-screen landscape:h-[100vw];
     }
   }
   

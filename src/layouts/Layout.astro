@@ -10,7 +10,14 @@ const { title = "" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="overscroll-none">
+<html
+  lang="en"
+  class="overscroll-none"
+  x-data="{overflow: true}"
+  x-bind:class="overflow === false && 'lock-scroll'"
+  x-on:hide-overflow.camel.window="overflow = false"
+  x-on:show-overflow.camel.window="overflow = true"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
@@ -21,20 +28,22 @@ const { title = "" } = Astro.props;
     <link rel="stylesheet" href="https://use.typekit.net/cvj8baw.css" />
     <title>{title}</title>
   </head>
-  <body>
-    <div
-      class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
-      x-bind="cursor"
-      x-data="Cursor"
-    >
-      <Eyes
-        watchMobileCanvasMove={false}
-        watchEmptyCanvas={true}
-        reverse={true}
-        className="-translate-x-1/2 -translate-y-1/2 hidden lg:block lg:!w-20 lg:!h-20 text-peach-light"
-      />
+  <body class="relative w-screen h-100dvh">
+    <div class="body-wrapper">
+      <div
+        class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
+        x-bind="cursor"
+        x-data="Cursor"
+      >
+        <Eyes
+          watchMobileCanvasMove={false}
+          watchEmptyCanvas={true}
+          reverse={true}
+          className="-translate-x-1/2 -translate-y-1/2 hidden lg:block lg:!w-20 lg:!h-20 text-peach-light"
+        />
+      </div>
+      <slot />
     </div>
-    <slot />
   </body>
 </html>
 
