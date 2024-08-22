@@ -363,10 +363,35 @@ let { className, portfolio } = Astro.props;
             "block--moving": this.mode === "moving",
           };
         },
+        ["@mouseenter.self"]() {
+          this.$dispatch("cursorChange", {
+            className: {
+              add: ["cursor--hidden"],
+            },
+          });
+        },
+        ["@mousemove.self.throttle.16ms.passive"]() {
+          this.$dispatch("cursorChange", {
+            className: {
+              add: ["cursor--hidden"],
+            },
+          });
+        },
+        ["@mouseleave.self"]() {
+          this.$dispatch("cursorChange", {
+            className: {
+              remove: ["cursor--hidden"],
+            },
+          });
+        },
         ["@pointerdown.self"](event) {
-          console.log(202);
           this.isMoving = true;
           this.onSelect(event);
+          this.$dispatch("cursorChange", {
+            className: {
+              add: ["cursor--hidden"],
+            },
+          });
         },
         ["@pointerup"]() {
           if (this.mode === "moving") {
