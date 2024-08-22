@@ -61,7 +61,7 @@ let { className, portfolio } = Astro.props;
     <div
       class="opacity-0 translate-y-4 lg:hidden transition-all duration-300 w-full pt-2 pb-1 px-4 absolute bottom-0 left-0 z-20 bg-peach-light theme-border"
       x-bind:class="items.length !== 0 && 'translate-y-full !opacity-0'"
-      x-data="Stagger(4000, ['opacity-0', 'translate-y-4'])"
+      x-data="Stagger(2000, ['opacity-0', 'translate-y-4'])"
     >
       <h2 class="text-center">Tap anywhere to begin!</h2>
     </div>

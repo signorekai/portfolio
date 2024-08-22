@@ -25,12 +25,12 @@ projects.map(({ data: project, id }) => {
 <Layout title="Alfred Lau aka @signorekai">
   <Viewport className="w-screen h-svh">
     <div
-      class="fixed z-9999 w-full border-black header"
-      x-data="Stagger(2050, 'header--active')"
+      class="fixed z-9990 w-full border-black header"
+      x-data="Stagger(1050, 'header--active')"
     >
       <h3
         class="relative opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
-        x-data="Stagger(4000, ['opacity-100'])"
+        x-data="Stagger(3000, ['opacity-100'])"
       >
         <ul class="marquee" x-bind="container" x-data="Marquee({speed: 0.65})">
           <li>* A.K.A @SIGNOREKAI ON THE INTERNET</li>
@@ -49,7 +49,7 @@ projects.map(({ data: project, id }) => {
           class="normal-case relative z-10 leading-none outlined flex-align-middle gap-x-3"
         >
           <Typewriting
-            pauseStart={4000}
+            pauseStart={3000}
             pauseEnd={3000}
             textArray={["MY NAME IS ALFRED", "& I MAKE DIGITAL THINGS"]}
           />
