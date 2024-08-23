@@ -63,21 +63,15 @@ export default (Alpine) => {
           const current = this.textArray[this.textIndex];
           const characterArray = this.splitter.splitGraphemes(current);
           
-          console.log('debug', this.textIndex, this.charIndex);
           if (this.charIndex > characterArray.length) {
-            console.log(68)
             clearInterval(this.typingInterval);
             if ((this.textArray.length - this.textIndex) === 1 && this.repeatCount <= this.repeatCycle && this.multiline === false) {
-              console.log(71)
             } else {
-              console.log(73)
               if (this.multiline) {
-                console.log(75)
                 if (this.charIndex > characterArray.length) {
                   if ((this.textArray.length - this.textIndex) === 1) {
                   } else {
                     setTimeout(() => {
-                      console.log(89)
                       this.textIndex += 1;
                       this.charIndex = 1;
                       this.typingInterval = setInterval(typer, this.typingSpeed);
@@ -85,7 +79,6 @@ export default (Alpine) => {
                   }
                 }
               } else {
-                console.log(82)
                 this.direction = 'backward';
                 setTimeout(() => {
                   this.typingInterval = setInterval(typer, this.deleteSpeed);
@@ -96,10 +89,8 @@ export default (Alpine) => {
 
           if (this.charIndex > 0) {
             if (this.multiline)  {
-              console.log(93)
               let allArrays = this.textArray.filter((array, key) => (key <= this.textIndex))
               allArrays[this.textIndex] = allArrays[this.textIndex].slice(0, this.charIndex);
-              console.log(this.textIndex, this.charIndex);
 
               this.$el.innerHTML = allArrays.join("<br />")
             } else {
@@ -110,11 +101,9 @@ export default (Alpine) => {
           }
 
           if (this.direction === 'forward'){
-            console.log(106)
             this.charIndex += 1;
           } else {
             if (this.charIndex == 0) {
-              console.log(109)
               this.direction = 'forward';
               this.repeatCount++;
               clearInterval(this.typingInterval);
