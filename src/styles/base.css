@@ -68,10 +68,9 @@
 
 
 @layer base {
-  html.lock-scroll {
-    .body-wrapper {
-      @apply overflow-y-hidden fixed w-full;
-    }
+  .lock-scroll {
+    @apply overflow-y-hidden fixed w-full;
+    top: var(--offset);
   }
 
   body {
