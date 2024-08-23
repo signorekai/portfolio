@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../.astro/collections/projects.schema.json", 
   "isDraft": false,
   "sortOrder": 130,
   "title": "Peekaboo - Journalist in Residence",

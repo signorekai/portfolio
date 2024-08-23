@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../.astro/collections/projects.schema.json",
   "isDraft": false,
   "sortOrder": 90,
   "title": "Recyclopedia.sg",

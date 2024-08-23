@@ -1,8 +1,8 @@
 {
+  "$schema": "../../../.astro/collections/projects.schema.json",
   "isDraft": false,
   "sortOrder": 80,
   "title": "Homerun by Superhero Me",
-  "description": "Homerun is an exhibition by 5 children - Alfred Goh, Brandvan Yang, MaryAngelly Jayabahan, Nur Shahanis Binte Johar and Raden Rauf Bin Radin Padli, and Superhero Me, touching on topics such as tension between ideas and realities of success, social class, body confidence, boredom and family upbringing. As its visitorship was limited due to the 2020 COVID-19 pandemic, I was engaged to create an online experience for the exhibition.",
   "shortDescription": "Interactive Design, Frontend Development & Digital Experiential Design. Built with Barba.js & Fabric.js.",
   "items": [{
     "media": "videos/HOMERUN-01.mp4",

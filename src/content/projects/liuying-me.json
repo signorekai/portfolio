@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../.astro/collections/projects.schema.json",
   "isDraft": false,
   "sortOrder": 140,
   "title": "Liuying.me",

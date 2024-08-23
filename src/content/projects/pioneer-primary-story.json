@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../.astro/collections/projects.schema.json",
   "isDraft": false,
   "sortOrder": 70,
   "title": "Pioneer Primary Story",
