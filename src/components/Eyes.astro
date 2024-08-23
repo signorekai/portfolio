@@ -88,6 +88,7 @@ const options = {
 
 <script>
   import Alpine from "alpinejs";
+  import type { Coordinates } from "./Canvas.astro";
 
   document.addEventListener("alpine:init", () => {
     Alpine.data(
@@ -97,8 +98,8 @@ const options = {
         maxDistance,
         watchMobileCanvasMove,
         watchEmptyCanvas,
-        cursorPosition: null,
-        handleMove(x, y) {
+        cursorPosition: { x: 0, y: 0 },
+        handleMove(x: number, y: number): Coordinates {
           const dimensions = {
             width: document.documentElement.clientWidth,
             height: document.documentElement.clientHeight,
@@ -114,12 +115,14 @@ const options = {
               this.$el.classList.add("eyes--empty");
             }
           },
-          ["@mobile-canvas-move.camel.window.throttle.16ms"]({ detail }) {
+          ["@mobile-canvas-move.camel.window.throttle.16ms"]({
+            detail,
+          }: CustomEvent<Coordinates>) {
             if (this.watchMobileCanvasMove) {
               this.$data.cursorPosition = this.handleMove(detail.x, detail.y);
             }
           },
-          ["@mousemove.window.throttle.16ms.passive"](e) {
+          ["@mousemove.window.throttle.16ms.passive"](e: MouseEvent) {
             this.$data.cursorPosition = this.handleMove(e.clientX, e.clientY);
           },
         },
@@ -127,18 +130,24 @@ const options = {
     );
 
     Alpine.data("Eye", ({ mobilePosition }) => ({
-      original: null,
-      vector: null,
+      original: { cx: 0, cy: 0 },
+      vector: { cx: 0, cy: 0 },
       init() {
         this.original = {
-          cx: parseFloat(this.$el.getAttribute("cx")),
-          cy: parseFloat(this.$el.getAttribute("cy")),
+          cx: parseFloat(this.$el.getAttribute("cx")!),
+          cy: parseFloat(this.$el.getAttribute("cy")!),
         };
         this.vector = this.original;
 
         const isMobile = document.documentElement.clientWidth <= 767;
 
-        const positionByPercentage = (cx, cy, radius, px, py) => {
+        const positionByPercentage = (
+          cx: number,
+          cy: number,
+          radius: number,
+          px: number,
+          py: number
+        ) => {
           const newX = cx + radius * Math.cos(px * Math.PI);
           const newY = cy - radius * Math.cos(py * Math.PI);
           return { cx: newX, cy: newY };
@@ -148,6 +157,7 @@ const options = {
           this.$data.vector = positionByPercentage(
             this.original.cx,
             this.original.cy,
+            // @ts-ignore
             this.$data.maxDistance.x,
             mobilePosition.x,
             mobilePosition.y
@@ -158,17 +168,20 @@ const options = {
           this.$data.vector = positionByPercentage(
             this.original.cx,
             this.original.cy,
+            // @ts-ignore
             this.$data.maxDistance.y,
+            // @ts-ignore
             this.reverse ? value.x : 1 - value.x,
+            // @ts-ignore
             this.reverse ? 1 - value.y : value.y
           );
         });
       },
       eye: {
-        [":cx"]() {
+        [":cx"](): number {
           return this.$data.vector.cx;
         },
-        [":cy"]() {
+        [":cy"](): number {
           return this.$data.vector.cy;
         },
       },

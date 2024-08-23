@@ -1,10 +1,21 @@
 ---
+import type { PortfolioItem } from "src/pages/index.astro";
 import Arrow from "./Arrow.astro";
 
 interface Props {
   className?: string;
-  portfolio: Array<object>;
+  portfolio: Array<PortfolioItem>;
 }
+
+export type CursorChangeEventEffects = {
+  className?: {
+    add: string[];
+    remove: string[];
+    toggle: string[];
+  };
+};
+
+export type Coordinates = { x: number; y: number };
 
 let { className, portfolio } = Astro.props;
 ---
@@ -115,7 +126,7 @@ let { className, portfolio } = Astro.props;
   </div>
 </div>
 
-<script define:vars={{ portfolio }}>
+<script define:vars={{ portfolio }} is:inline>
   const getRandomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);

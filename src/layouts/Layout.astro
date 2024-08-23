@@ -1,7 +1,7 @@
 ---
-import Eyes from "../components/Eyes.astro";
-import Header from "../components/Header.astro";
-import Viewport from "../components/Viewport.astro";
+import Eyes from "@components/Eyes.astro";
+import Header from "@components/Header.astro";
+import Viewport from "@components/Viewport.astro";
 import "../styles/base.css";
 
 interface Props {
@@ -53,14 +53,15 @@ const { title = "" } = Astro.props;
 </html>
 
 <script>
+  import type { CursorChangeEventEffects } from "@components/Canvas.astro";
   import Alpine from "alpinejs";
 
-  const bodyWrapper = document.querySelector(".body-wrapper");
-
-  window.visualViewport.addEventListener("resize", () => {
-    document.documentElement.style["--dvh"] =
-      `${window.visualViewport.height / 100}px`;
-  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", () => {
+      const height = window.visualViewport?.height || 0;
+      document.documentElement.style.setProperty("--dvh", `${height / 100}px`);
+    });
+  }
   document.addEventListener("alpine:init", () => {
     Alpine.data("BodyWrapper", () => ({
       scrollPosition: 0,
@@ -68,13 +69,13 @@ const { title = "" } = Astro.props;
       body: {
         ["@resize.window"]() {},
         ["@hide-overflow.camel.window.passive"]() {
-          this.$data.scrollPosition = this.$refs.bodyWrapper.scrollTop;
+          this.$data.scrollPosition = this.$refs.bodyWrapper?.scrollTop || 0;
           this.$data.showOverflow = false;
         },
         ["@show-overflow.camel.window"]() {
           this.$data.showOverflow = true;
           setTimeout(() => {
-            this.$refs.bodyWrapper.scrollTo(0, this.$data.scrollPosition);
+            this.$refs.bodyWrapper?.scrollTo(0, this.$data.scrollPosition);
           }, 1);
         },
         [":class"]() {
@@ -109,13 +110,15 @@ const { title = "" } = Astro.props;
       },
       throttledListener: null,
       cursor: {
-        ["@mousemove.window.throttle.16ms.passive"](e) {
+        ["@mousemove.window.throttle.16ms.passive"](e: MouseEvent) {
           if (this.initialised) {
             this.$data.cursorPosition.x = e.clientX;
             this.$data.cursorPosition.y = e.clientY;
           }
         },
-        ["@cursor-change.camel.window"]({ detail }) {
+        ["@cursor-change.camel.window"]({
+          detail,
+        }: CustomEvent<CursorChangeEventEffects>) {
           if (this.initialised) {
             if (detail.hasOwnProperty("className")) {
               if (detail.className.hasOwnProperty("toggle")) {

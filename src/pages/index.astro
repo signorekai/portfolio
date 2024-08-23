@@ -3,19 +3,38 @@ import { getCollection } from "astro:content";
 
 import Layout from "../layouts/Layout.astro";
 import Canvas from "../components/Canvas.astro";
-import Typewriting from "../components/Typewriting.astro";
+import type { CollectionEntry } from "astro:content";
 
-const projects = await getCollection("projects");
-let items = [];
+const projects = await getCollection(
+  "projects",
+  ({ data }) => data.isDraft === false
+);
+
+export type PortfolioItem = CollectionEntry<"projects">["data"]["items"][0] & {
+  projectTitle: string;
+  projectDescription: string | undefined;
+  shortProjectDescription: string | null;
+  projectLink: string;
+  projectSlug: string;
+  index?: number;
+  top?: number;
+  left?: number;
+  zIndex?: number;
+};
+
+let items: PortfolioItem[] = [];
+
 projects.map(({ data: project, id }) => {
-  const processedItems = project.items.map((item) => ({
-    ...item,
-    projectTitle: project.title,
-    projectDescription: project.description,
-    shortProjectDescription: project.shortDescription,
-    projectLink: project.link || "",
-    projectSlug: id,
-  }));
+  const processedItems: PortfolioItem[] = project.items.map(
+    (item): PortfolioItem => ({
+      ...item,
+      projectTitle: project.title,
+      projectDescription: project.description,
+      shortProjectDescription: project.shortDescription,
+      projectLink: project.link || "",
+      projectSlug: id,
+    })
+  );
   items = [...items, ...processedItems];
 });
 ---
