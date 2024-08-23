@@ -10,7 +10,9 @@ interface Props {
   pauseEnd?: number;
   cursorSpeed?: number;
   repeatCycle?: number;
-  multiLine?: boolean;
+  multiline?: boolean;
+  autostart?: boolean;
+  cursorClassName?: string;
 }
 
 let {
@@ -22,9 +24,11 @@ let {
   deleteSpeed = 30,
   pauseStart = 1000,
   pauseEnd = 2000,
-  cursorSpeed = 300,
+  cursorSpeed = 500,
   repeatCycle = 0,
-  multiLine = false, // @todo
+  autostart = true,
+  multiline = false,
+  cursorClassName = "",
 } = Astro.props;
 
 // set defaults
@@ -39,16 +43,25 @@ const options = {
   pauseEnd,
   cursorSpeed,
   repeatCycle,
-  multiLine,
+  multiline,
+  autostart,
+};
+
+const styles = {
+  "--cursor-speed": `${cursorSpeed}ms`,
+  "--pause-start": `${pauseStart * 2}ms`,
 };
 ---
 
 <span
+  x-bind="textContainer"
+  class="typewriter"
   x-data={`Typewriter(${JSON.stringify(options)})`}
   aria-label={options.textArray.join(" ")}
   aria-hidden="true"
 >
 </span>
 <span
-  class="h-[1em] w-mobile-border-width lg:w-border-width inline-block bg-black opacity-0"
+  x-bind:style={`${JSON.stringify(styles)}`}
+  class:list={["typewriter-cursor", cursorClassName]}
   x-ref="cursor"></span>

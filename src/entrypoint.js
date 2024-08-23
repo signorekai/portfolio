@@ -41,7 +41,7 @@ export default (Alpine) => {
       }
     }));
 
-    Alpine.data('Typewriter',({ repeatCycle, text, textArray, textIndex, charIndex, typingSpeed, deleteSpeed, pauseStart, pauseEnd, cursorSpeed }) => ({
+    Alpine.data('Typewriter',({ autostart, multiline, repeatCycle, text, textArray, textIndex, charIndex, typingSpeed, deleteSpeed, pauseStart, pauseEnd, cursorSpeed }) => ({
       initialText: text,
       splitter: null,
       textArray,
@@ -52,71 +52,108 @@ export default (Alpine) => {
       pauseStart,
       pauseEnd,
       cursorSpeed,
+      multiline,
+      autostart,
       direction: 'forward',
       typingInterval: false,
-      cursorInterval: false,
       repeatCycle,
       repeatCount: 0,
-      init() {
-        this.splitter = new GraphemeSplitter();
-        
-        const startTyping = () => {
+      startTyping() {
+        const typer = () => {
           const current = this.textArray[this.textIndex];
           const characterArray = this.splitter.splitGraphemes(current);
-
+          
+          console.log('debug', this.textIndex, this.charIndex);
           if (this.charIndex > characterArray.length) {
+            console.log(68)
             clearInterval(this.typingInterval);
-            if ((this.textArray.length - this.textIndex) === 1 && this.repeatCount <= this.repeatCycle) {
+            if ((this.textArray.length - this.textIndex) === 1 && this.repeatCount <= this.repeatCycle && this.multiline === false) {
+              console.log(71)
             } else {
-              this.direction = 'backward';
-              setTimeout(() => {
-                this.typingInterval = setInterval(startTyping, this.deleteSpeed);
-              }, this.pauseEnd);
+              console.log(73)
+              if (this.multiline) {
+                console.log(75)
+                if (this.charIndex > characterArray.length) {
+                  if ((this.textArray.length - this.textIndex) === 1) {
+                  } else {
+                    setTimeout(() => {
+                      console.log(89)
+                      this.textIndex += 1;
+                      this.charIndex = 1;
+                      this.typingInterval = setInterval(typer, this.typingSpeed);
+                    }, this.pauseEnd);
+                  }
+                }
+              } else {
+                console.log(82)
+                this.direction = 'backward';
+                setTimeout(() => {
+                  this.typingInterval = setInterval(typer, this.deleteSpeed);
+                }, this.pauseEnd);
+              }
             }
           }
 
           if (this.charIndex > 0) {
-            this.$el.innerText = characterArray.slice(0, this.charIndex).join("")
+            if (this.multiline)  {
+              console.log(93)
+              let allArrays = this.textArray.filter((array, key) => (key <= this.textIndex))
+              allArrays[this.textIndex] = allArrays[this.textIndex].slice(0, this.charIndex);
+              console.log(this.textIndex, this.charIndex);
+
+              this.$el.innerHTML = allArrays.join("<br />")
+            } else {
+              this.$el.innerText = characterArray.slice(0, this.charIndex).join("")
+            }
           } else {
             this.$el.innerText = "";
           }
 
-          // this.$el.innerText = current.substring(0, this.charIndex);
           if (this.direction === 'forward'){
+            console.log(106)
             this.charIndex += 1;
           } else {
             if (this.charIndex == 0) {
+              console.log(109)
               this.direction = 'forward';
               this.repeatCount++;
               clearInterval(this.typingInterval);
               setTimeout(() => {
                 this.textIndex += 1;
-                if (this.textIndex >= this.textArray.length){
+                if (this.textIndex >= this.textArray.length && this.multiline === false){
                   this.textIndex = 0;
                 }
-                this.typingInterval = setInterval(startTyping, this.typingSpeed);
+                this.typingInterval = setInterval(typer, this.typingSpeed);
               }, this.typingSpeed);
             }
             this.charIndex -= 1;
           }
         }
-        
+                
         setTimeout(() => {
-          this.typingInterval = setInterval(startTyping, this.typingSpeed);
-          this.cursorInterval = setInterval(() => {
-            if(this.$refs.cursor.classList.contains('opacity-0')){
-              this.$refs.cursor.classList.remove('opacity-0');
-            } else {
-              this.$refs.cursor.classList.add('opacity-0');
-            }
-          }, this.cursorSpeed);
+          this.typingInterval = setInterval(typer, this.typingSpeed);
         }, this.pauseStart)
+      },
+      init() {
+        this.splitter = new GraphemeSplitter();
 
+        if (this.autostart) {
+          this.$dispatch('startTyping')
+        }
+
+        setTimeout(() => {
+
+          this.$dispatch('startTyping')
+        }, 2000)
       },
       destroy() {
         clearInterval(this.typingInterval);
-        clearInterval(this.cursorInterval);
       },
+      textContainer: {
+        ['@start-typing.camel.self']() {
+          this.startTyping();
+        }
+      }
     }))
 
     Alpine.data('Marquee', ({ speed = 1, spaceX = 0, dynamicWidthElements = false, mode = 'autoplay', pauseWhileHover = true }) => ({
@@ -186,7 +223,6 @@ export default (Alpine) => {
         const computedStyles = window.getComputedStyle(this.$el);
 
         if (computedStyles.display !== 'none') {
-
           while (this.$el.scrollWidth <= this.$el.clientWidth) {
             if (this.dynamicWidthElements) {
               // If we don't give this.$el time to recalculate its dimensions

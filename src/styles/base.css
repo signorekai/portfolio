@@ -20,7 +20,9 @@
   --purple-light: #C1C5E0;
   --green: #073f38;
   --olive: #516b35;
+  --olive-light: #929b87;
 
+  --header: 0px;
   --dvh: 1dvh;
 }
 
@@ -145,7 +147,10 @@
       @apply border-t-mobile-border-width lg:border-t-border-width;
       @apply border-black;
     }
+  }
 
+  .viewport-wrapper {
+    @apply py-3 px-3 lg:p-6;
   }
 
   @keyframes bg-expand {
@@ -454,6 +459,20 @@
       @apply fill-black;
     }
   }
+
+  .typewriter-cursor {
+    --pause-start: 3s;
+    --cursor-speed: 1s;
+    opacity: 0;
+
+    @apply h-[1em] w-mobile-border-width lg:w-border-width inline-block bg-black;
+    animation: blink var(--cursor-speed) steps(1, start) var(--pause-start) infinite alternate forwards;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0 }
+  50% {opacity: 1 }
 }
 
 @layer utilities {
