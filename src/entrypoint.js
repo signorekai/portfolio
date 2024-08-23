@@ -1,5 +1,6 @@
-import intersect from '@alpinejs/intersect'
-import GraphemeSplitter from 'grapheme-splitter'
+import intersect from '@alpinejs/intersect';
+import resize from '@alpinejs/resize';
+import GraphemeSplitter from 'grapheme-splitter';
 import { debounce } from 'throttle-debounce';
 
 /**
@@ -19,8 +20,11 @@ const appendChildAwaitLayout = (parent, element) => {
 }
 
 export default (Alpine) => {
-  Alpine.plugin(intersect)
+  Alpine.plugin(intersect);
+  Alpine.plugin(resize);
   document.addEventListener('alpine:init', () => {
+    Alpine.store("headerHeight", 0);
+
     Alpine.data('Stagger', (delay, classes) => ({
       delay,
       init() {
@@ -184,7 +188,6 @@ export default (Alpine) => {
         if (computedStyles.display !== 'none') {
 
           while (this.$el.scrollWidth <= this.$el.clientWidth) {
-            console.log(186)
             if (this.dynamicWidthElements) {
               // If we don't give this.$el time to recalculate its dimensions
               // when adding child nodes, the scrollWidth and clientWidth won't
@@ -205,7 +208,6 @@ export default (Alpine) => {
             // has enough elements off-screen to scroll into view
             let j = 0
             while (j < this.originalElement.childElementCount) {
-              console.log(208)
               this.$el.appendChild(this.originalElement.children[i].cloneNode(true))
               j += 1
               i += 1

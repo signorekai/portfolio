@@ -2,10 +2,7 @@
 import { getCollection } from "astro:content";
 
 import Layout from "../layouts/Layout.astro";
-import Viewport from "../components/Viewport.astro";
-import Typewriting from "../components/Typewriting.astro";
 import Canvas from "../components/Canvas.astro";
-import Eyes from "../components/Eyes.astro";
 
 const projects = await getCollection("projects");
 let items = [];
@@ -22,53 +19,24 @@ projects.map(({ data: project, id }) => {
 });
 ---
 
-<div
-  class="fixed z-9990 w-full border-black header"
-  x-data="Stagger(1050, 'header--active')"
->
-  <h3
-    class="relative opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
-    x-data="Stagger(3000, ['opacity-100'])"
-  >
-    <ul class="marquee" x-bind="container" x-data="Marquee({speed: 0.65})">
-      <li>* A.K.A @SIGNOREKAI ON THE INTERNET</li>
-      <li>—</li>
-      <li>Tap anywhere on the yellow box to get started</li>
-      <li>—</li>
-      <li>Go on, I won't bite</li>
-      <li>—</li>
-    </ul>
-  </h3>
-  <div
-    class="wrapper flex-align-middle justify-between lg:justify-start text-peach-light gap-x-2"
-  >
-    <div
-      class="opacity-0 order-2 lg:order-1"
-      x-data="Stagger(3000, 'opacity-0')"
-    >
-      <Eyes
-        className="text-transparent scale-[1.7] origin-[65%_50%] lg:scale-100 eyes--no-shadow"
-      />
-    </div>
-    <h1
-      class="order-1 lg:order-2 normal-case relative z-10 leading-none outlined flex-align-middle gap-x-1"
-    >
-      <Typewriting
-        pauseStart={3000}
-        pauseEnd={3000}
-        textArray={["MY NAME IS ALFRED", "& I MAKE DIGITAL THINGS"]}
-      />
-    </h1>
-  </div>
-</div>
-<Viewport className="" />
 <Layout title="Alfred Lau aka @signorekai">
   <div class="viewport-screen">
+    <h3
+      class="absolute top-0 p-1 overflow-hidden hidden lg:block w-full opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
+      x-data="Stagger(3000, ['opacity-100'])"
+    >
+      <ul class="marquee" x-bind="container" x-data="Marquee({speed: 0.65})">
+        <li>* A.K.A @SIGNOREKAI ON THE INTERNET</li>
+        <li>-</li>
+        <li>Tap anywhere on the yellow box to get started</li>
+        <li>-</li>
+        <li>Go on, I won't bite</li>
+        <li>-</li>
+      </ul>
+    </h3>
     <Canvas className="flex-1" portfolio={items} />
   </div>
-  <div class="viewport-screen bg-peach-light">
-    <div class="w-full min-h-dvh">
-      <h2>HI</h2>
-    </div>
+  <div class="viewport-screen p-2">
+    <h2>hi</h2>
   </div>
 </Layout>

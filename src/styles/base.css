@@ -20,6 +20,8 @@
   --purple-light: #C1C5E0;
   --green: #073f38;
   --olive: #516b35;
+
+  --dvh: 1dvh;
 }
 
 @keyframes svg-animation {
@@ -69,14 +71,20 @@
 
 @layer base {
   .lock-scroll {
-    @apply overflow-y-hidden fixed w-full;
-    top: var(--offset);
+    @apply overflow-y-hidden top-[calc(var(--offset)_+_var(--header))] lg:top-auto fixed lg:relative w-full;
   }
 
   body {
     @apply bg-peach-light;
     @apply cursor-moving lg:cursor-none;
+    @apply relative h-dvh overflow-hidden;
+    @apply flex flex-col;
   }
+
+  .body-wrapper {
+    @apply flex-1 overflow-auto overscroll-none;
+    scrollbar-width: none;
+  } 
 
   h1, h2, h3, h4, h5, h6 {
     &.outlined {
@@ -131,7 +139,7 @@
   }
 
   .viewport-screen {
-    @apply w-full min-h-svh lg:min-h-0 lg:h-screen;
+    @apply w-full min-h-[calc(100svh_-_var(--header))] relative;
 
     & + .viewport-screen {
       @apply border-t-mobile-border-width lg:border-t-border-width;
@@ -244,7 +252,7 @@
 
     &.project-meta--full {
       @apply max-w-none md:max-w-none border-t-mobile-border-width lg:border-t-border-width;
-      @apply z-9990;
+      @apply z-9980;
     }
     
     &.project-meta--no-link, &.project-meta--button, &.project-meta--has-link {

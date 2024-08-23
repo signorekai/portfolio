@@ -1,5 +1,7 @@
 ---
 import Eyes from "../components/Eyes.astro";
+import Header from "../components/Header.astro";
+import Viewport from "../components/Viewport.astro";
 import "../styles/base.css";
 
 interface Props {
@@ -24,20 +26,27 @@ const { title = "" } = Astro.props;
     <link rel="stylesheet" href="https://use.typekit.net/cvj8baw.css" />
     <title>{title}</title>
   </head>
-  <body class="relative min-h-dvh">
-    <div class="body-wrapper" x-data="ScrollLock" x-bind="body">
-      <div
-        class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
-        x-bind="cursor"
-        x-data="Cursor"
-      >
-        <Eyes
-          watchMobileCanvasMove={false}
-          watchEmptyCanvas={true}
-          reverse={true}
-          className="-translate-x-1/2 -translate-y-1/2 hidden lg:block lg:!w-20 lg:!h-20 text-peach-light"
-        />
-      </div>
+  <body>
+    <div
+      class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
+      x-bind="cursor"
+      x-data="Cursor"
+    >
+      <Eyes
+        watchMobileCanvasMove={false}
+        watchEmptyCanvas={true}
+        reverse={true}
+        className="-translate-x-1/2 -translate-y-1/2 hidden lg:block lg:!w-20 lg:!h-20 text-peach-light"
+      />
+    </div>
+    <Viewport />
+    <Header />
+    <div
+      class="body-wrapper"
+      x-data="BodyWrapper"
+      x-bind="body"
+      x-ref="bodyWrapper"
+    >
       <slot />
     </div>
   </body>
@@ -45,18 +54,28 @@ const { title = "" } = Astro.props;
 
 <script>
   import Alpine from "alpinejs";
+
+  const bodyWrapper = document.querySelector(".body-wrapper");
+
+  window.visualViewport.addEventListener("resize", () => {
+    document.documentElement.style["--dvh"] =
+      `${window.visualViewport.height / 100}px`;
+  });
   document.addEventListener("alpine:init", () => {
-    Alpine.data("ScrollLock", () => ({
+    Alpine.data("BodyWrapper", () => ({
       scrollPosition: 0,
       showOverflow: true,
       body: {
-        ["x-on:hide-overflow.camel.window.passive"]() {
-          this.$data.scrollPosition = window.scrollY;
+        ["@resize.window"]() {},
+        ["@hide-overflow.camel.window.passive"]() {
+          this.$data.scrollPosition = this.$refs.bodyWrapper.scrollTop;
           this.$data.showOverflow = false;
         },
-        ["x-on:show-overflow.camel.window"]() {
+        ["@show-overflow.camel.window"]() {
           this.$data.showOverflow = true;
-          window.scrollTo(0, this.$data.scrollPosition);
+          setTimeout(() => {
+            this.$refs.bodyWrapper.scrollTo(0, this.$data.scrollPosition);
+          }, 1);
         },
         [":class"]() {
           return {
@@ -65,9 +84,7 @@ const { title = "" } = Astro.props;
         },
         [":style"]() {
           return {
-            "--offset": this.$data.showOverflow
-              ? "0px"
-              : `-${this.$data.scrollPosition}px`,
+            "--offset": `-${this.$data.scrollPosition}px`,
           };
         },
       },

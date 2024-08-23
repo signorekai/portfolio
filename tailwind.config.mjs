@@ -32,10 +32,13 @@ export default {
 				'mobile-border-width': 'var(--mobile-border-width)',
 			},
 			height: {
+				'dvh': 'calc(var(--dvh) * 100)',
 				'border-width': 'var(--border-width)',
 				'mobile-border-width': 'var(--mobile-border-width)',
 			},
 			spacing: {
+				'13': '3.25rem',
+				'14': '3.5rem',
 				'border-width': 'var(--border-width)',
 				'mobile-border-width': 'var(--mobile-border-width)',
 			},

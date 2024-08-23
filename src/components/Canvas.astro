@@ -10,11 +10,14 @@ let { className, portfolio } = Astro.props;
 ---
 
 <div
-  class={`w-full h-svh relative canvas ${className}`}
+  class={`w-full relative canvas ${className}`}
   x-data="Canvas"
   x-bind:class="isMoving && 'canvas--moving'"
 >
-  <div class="w-full h-svh relative overflow-hidden" x-ref="container">
+  <div
+    class="w-full h-[calc(100svh_-_var(--header))] relative overflow-hidden"
+    x-ref="container"
+  >
     <div class="bg pointer-events-none"></div>
     <div
       class="w-full h-full absolute flex"
@@ -172,23 +175,43 @@ let { className, portfolio } = Astro.props;
           if ($block.mode === "moving") {
             let moving = {
               x: event.pageX - $block.clickX,
-              y: event.pageY - $block.clickY,
+              y:
+                event.pageY -
+                $block.clickY +
+                this.$data.scrollPosition -
+                this.$store.headerHeight,
             };
 
-            const computedStyles = window.getComputedStyle(this.$el);
-            const offset = parseFloat(
-              computedStyles.getPropertyValue("--offset")
-            );
-
-            if (typeof event.touches !== "undefined") {
+            if (
+              typeof event.touches !== "undefined" &&
+              event.touches.length === 1
+            ) {
               moving = {
                 x: event.touches[0].pageX - $block.clickX,
-                y: event.touches[0].pageY - $block.clickY - offset,
+                y:
+                  event.touches[0].pageY -
+                  $block.clickY +
+                  this.$data.scrollPosition -
+                  this.$store.headerHeight,
               };
 
               this.$dispatch("mobileCanvasMove", {
                 x: event.touches[0].pageX,
                 y: event.touches[0].pageY,
+              });
+
+              if (window.visualViewport.scale === 1) {
+                window.requestAnimationFrame(() => {
+                  $block.previousCoordinates = moving;
+                  $block.top = moving.y;
+                  $block.left = moving.x;
+                });
+              }
+            } else if (typeof event.touches === "undefined") {
+              window.requestAnimationFrame(() => {
+                $block.previousCoordinates = moving;
+                $block.top = moving.y;
+                $block.left = moving.x;
               });
             }
 
@@ -199,11 +222,6 @@ let { className, portfolio } = Astro.props;
             // );
             // $block.delta.y = moving.y - $block.previousCoordinates.y;
             // $block.delta.x = moving.x - $block.previousCoordinates.x;
-            window.requestAnimationFrame(() => {
-              $block.previousCoordinates = moving;
-              $block.top = moving.y;
-              $block.left = moving.x;
-            });
           }
         }
       },
