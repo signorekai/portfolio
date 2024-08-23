@@ -175,18 +175,16 @@ let { className, portfolio } = Astro.props;
               y: event.pageY - $block.clickY,
             };
 
+            const computedStyles = window.getComputedStyle(this.$el);
+            const offset = parseFloat(
+              computedStyles.getPropertyValue("--offset")
+            );
+
             if (typeof event.touches !== "undefined") {
               moving = {
                 x: event.touches[0].pageX - $block.clickX,
-                y: event.touches[0].pageY - $block.clickY,
+                y: event.touches[0].pageY - $block.clickY - offset,
               };
-
-              const computedStyles = window.getComputedStyle(this.$el);
-              const offset = parseFloat(
-                computedStyles.getPropertyValue("--offset")
-              );
-
-              moving.y -= offset;
 
               this.$dispatch("mobileCanvasMove", {
                 x: event.touches[0].pageX,
