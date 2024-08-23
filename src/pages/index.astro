@@ -25,7 +25,11 @@ projects.map(({ data: project, id }) => {
       class="absolute top-0 p-1 overflow-hidden hidden lg:block w-full opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
       x-data="Stagger(3000, ['opacity-100'])"
     >
-      <ul class="marquee" x-bind="container" x-data="Marquee({speed: 0.65})">
+      <ul
+        class="marquee"
+        x-bind="container"
+        x-data="Marquee({speed: 0.65, dynamicWidthElements: true})"
+      >
         <li>* A.K.A @SIGNOREKAI ON THE INTERNET</li>
         <li>-</li>
         <li>Tap anywhere on the yellow box to get started</li>
