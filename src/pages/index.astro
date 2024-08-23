@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 
 import Layout from "../layouts/Layout.astro";
 import Canvas from "../components/Canvas.astro";
+import Typewriting from "../components/Typewriting.astro";
 
 const projects = await getCollection("projects");
 let items = [];
@@ -40,7 +41,9 @@ projects.map(({ data: project, id }) => {
     </h3>
     <Canvas className="flex-1" portfolio={items} />
   </div>
-  <div class="viewport-screen p-2">
-    <h2>hi</h2>
+  <div class="viewport-screen bg-olive-light">
+    <div class="viewport-wrapper">
+      <h2>Under Construction</h2>
+    </div>
   </div>
 </Layout>
