@@ -173,7 +173,6 @@ export default (Alpine) => {
         window.removeEventListener('resize', this.debouncedResize)
       },
       async resize() {
-        console.log(177)
         // Reset to original number of elements
         this.$el.innerHTML = this.originalElement.innerHTML
   
