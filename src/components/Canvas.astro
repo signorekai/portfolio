@@ -181,6 +181,13 @@ let { className, portfolio } = Astro.props;
                 y: event.touches[0].pageY - $block.clickY,
               };
 
+              const computedStyles = window.getComputedStyle(this.$el);
+              const offset = parseFloat(
+                computedStyles.getPropertyValue("--offset")
+              );
+
+              moving.y -= offset;
+
               this.$dispatch("mobileCanvasMove", {
                 x: event.touches[0].pageX,
                 y: event.touches[0].pageY,
@@ -395,14 +402,14 @@ let { className, portfolio } = Astro.props;
           });
           this.$dispatch("hideOverflow");
         },
-        ["@pointerup"]() {
+        ["@pointerup.passive"]() {
           if (this.mode === "moving") {
             this.isMoving = false;
             this.mode = "selected";
             this.$dispatch("showOverflow");
           }
         },
-        ["@touchend"]() {
+        ["@touchend.passive"]() {
           if (this.mode === "moving") {
             this.isMoving = false;
             this.mode = "selected";
