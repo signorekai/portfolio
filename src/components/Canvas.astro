@@ -74,11 +74,14 @@ let { className, portfolio } = Astro.props;
       </div>
     </template>
     <div
-      class="opacity-0 translate-y-4 lg:hidden transition-all duration-300 w-full pt-2 pb-1 px-4 absolute bottom-0 left-0 z-20 bg-peach-light theme-border !border-b-0"
+      class="opacity-0 translate-y-4 lg:hidden transition-all duration-300 text-center w-full absolute bottom-20 left-0 z-20"
       x-bind:class="items.length !== 0 && 'translate-y-full !opacity-0'"
       x-data="Stagger(2000, ['opacity-0', 'translate-y-4'])"
     >
-      <h2 class="text-center">Tap anywhere to begin!</h2>
+      <button class="link-button link-button--maroon py-2">
+        <span>Tap anywhere to begin!</span>
+        <Arrow className="group-hover:translate-y-0.5" />
+      </button>
     </div>
     <div
       x-data="Meta()"
