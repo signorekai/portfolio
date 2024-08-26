@@ -294,12 +294,29 @@
 
   .link-button {
     @apply bg-yellow rounded-full text-center mix-blend-normal;
-    @apply items-center gap-x-1;
+    @apply items-center gap-x-1 justify-center;
     @apply pt-2 pb-1 px-6;
     @apply border-2 border-black;
     @apply transition-all duration-300 ease-in-out origin-center;
-    @apply hover:bg-peach;
+    @apply hover:bg-peach hover:text-green;
+    @apply inline-flex;
     @apply hover:shadow-link-box hover:translate-x-1 hover:-translate-y-1;
+
+    &.link-button--blue {
+      @apply bg-blue-electric text-white hover:bg-maroon;
+    }
+
+    &.link-button--green-electric {
+      @apply hover:bg-purple hover:text-white bg-green-electric;
+    }
+
+    &.link-button--maroon {
+      @apply hover:bg-purple hover:text-black text-white bg-maroon;
+    }
+
+    &.link-button--green {
+      @apply hover:bg-pink hover:text-black bg-green text-white;
+    }
   }
 
   .canvas:not(.canvas--moving) .project-block:not(.block--selected):not(.block--moving) {
@@ -485,10 +502,11 @@
   
   .skill-pill {
     @apply p-4 rounded-full bg-black text-peach-light/90 px-4 py-2 w-full h-full flex;
-    @apply justify-center items-center;
+    @apply justify-center items-center font-platform;
 
     h2 {
-      @apply font-uncut normal-case text-xl text-nowrap;
+      @apply font-platform normal-case text-xl text-nowrap;
+      @apply origin-center scale-[var(--scale)];
     }
   }
 }
