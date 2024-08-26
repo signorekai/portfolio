@@ -83,11 +83,6 @@
     @apply flex flex-col;
   }
 
-  .body-wrapper {
-    @apply flex-1 overflow-auto overscroll-none;
-    scrollbar-width: none;
-  } 
-
   h1, h2, h3, h4, h5, h6 {
     &.outlined {
       -webkit-text-stroke: 0.03em var(--black);
@@ -101,15 +96,15 @@
   }
 
   h2 {
-    @apply font-aktiv text-base md:text-xl leading-6 uppercase;
+    @apply font-aktiv text-base md:text-xl leading-none uppercase;
   }
 
   h5 {
-    @apply font-aktiv text-xl leading-5 uppercase; 
+    @apply font-aktiv text-xl leading-none uppercase; 
   }
 
   h6 {
-    @apply font-aktiv text-base leading-5 uppercase;
+    @apply font-aktiv text-base leading-none uppercase;
   }
 
 }
@@ -141,7 +136,7 @@
   }
 
   .viewport-screen {
-    @apply w-full min-h-[calc(100svh_-_var(--header))] relative;
+    @apply w-full min-h-[calc(100svh_-_var(--header))] relative flex;
 
     & + .viewport-screen {
       @apply border-t-mobile-border-width lg:border-t-border-width;
@@ -150,7 +145,7 @@
   }
 
   .viewport-wrapper {
-    @apply py-3 px-3 lg:p-6;
+    @apply py-3 px-3 lg:p-6 flex-1;
   }
 
   @keyframes bg-expand {

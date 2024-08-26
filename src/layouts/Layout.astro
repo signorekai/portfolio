@@ -52,6 +52,13 @@ const { title = "" } = Astro.props;
   </body>
 </html>
 
+<style>
+  .body-wrapper {
+    @apply flex-1 overflow-auto overscroll-none overflow-x-hidden;
+    scrollbar-width: none;
+  }
+</style>
+
 <script>
   import type { CursorChangeEventEffects } from "@components/Canvas.astro";
   import Alpine from "alpinejs";
