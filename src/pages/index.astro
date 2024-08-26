@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Canvas from "../components/Canvas.astro";
 import type { CollectionEntry } from "astro:content";
+import Draggable from "@components/Draggable.astro";
+import DraggableArea from "@components/DraggableArea.astro";
 
 const projects = await getCollection(
   "projects",
@@ -42,7 +44,7 @@ projects.map(({ data: project, id }) => {
 <Layout title="Alfred Lau aka @signorekai">
   <div class="viewport-screen">
     <h3
-      class="absolute top-0 p-1 overflow-hidden hidden lg:block w-full opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
+      class="absolute z-9980 top-0 p-1 overflow-hidden hidden lg:block w-full opacity-0 transition-all duration-300 ease-out uppercase font-platform text-xl bg-black text-white/95"
       x-data="Stagger(3000, ['opacity-100'])"
     >
       <ul
@@ -60,9 +62,160 @@ projects.map(({ data: project, id }) => {
     </h3>
     <Canvas className="flex-1" portfolio={items} />
   </div>
-  <div class="viewport-screen bg-olive-light">
-    <div class="viewport-wrapper">
-      <h2>Under Construction</h2>
+  <div class="viewport-screen bg-olive-light overflow-hidden">
+    <div class="viewport-wrapper p-0">
+      <DraggableArea>
+        <Draggable coordinates={{ x: -30, y: -30 }}>
+          <div
+            class="skill-pill opacity-75 w-32 h-32 p-5 flex justify-center items-center animate-spin-slow bg-red"
+          >
+            <span class="uppercase font-uncut leading-tight text-xl text-center"
+              >Based <br />in <strong>SG</strong></span
+            >
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: -6, y: 188 }}>
+          <div
+            class="skill-pill default-transitions opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">Node.js</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 99, y: 188 }}>
+          <div
+            class="skill-pill default-transitions opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">Typescript</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 232, y: 188 }}>
+          <div
+            class="skill-pill default-transitions opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">React</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 321, y: 188 }}>
+          <div
+            class="skill-pill default-transitions delay-[400ms] opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">Vue</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 15, y: 237 }}>
+          <div
+            class="skill-pill default-transitions delay-100 opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">React Native</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 165, y: 237 }}>
+          <div
+            class="skill-pill default-transitions delay-300 opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">Alpine JS</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 284, y: 237 }}>
+          <div
+            class="skill-pill default-transitions delay-75 duration-300 opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">Astro</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 29, y: 286 }}>
+          <div
+            class="skill-pill default-transitions opacity-0 scale-25"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-25': hide}"
+          >
+            <h2 class="">Preact</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 124, y: 286 }}>
+          <div
+            class="skill-pill default-transitions duration-300 opacity-0 scale-0"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-0': hide}"
+          >
+            <h2 class="">Next.js</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 222, y: 286 }}>
+          <div
+            class="skill-pill default-transitions delay-150 opacity-0 scale-[2]"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-[2]': hide}"
+          >
+            <h2 class="">Wordpress</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 20, y: 335 }}>
+          <div
+            class="skill-pill default-transitions opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">UI/UX</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 107, y: 335 }}>
+          <div
+            class="skill-pill default-transitions opacity-0 scale-150"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <h2 class="">Web Design</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 247, y: 335 }}>
+          <div
+            class="skill-pill default-transitions delay-200 duration-300 opacity-0 scale-0"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-0': hide}"
+          >
+            <h2 class="">Web Dev</h2>
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 10, y: 39 }}>
+          <h2
+            class="text-white outlined scale-0 font-black -rotate-3 leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
+            x-data="{hide:true}"
+            x-intersect.full.once="hide=false"
+            :class="{'opacity-0': hide, 'translate-y-6': hide, 'scale-0': hide}"
+          >
+            A creative coder, <br />coding designer, <br />or somewhere
+            inbetween
+          </h2>
+        </Draggable>
+      </DraggableArea>
     </div>
   </div>
 </Layout>
