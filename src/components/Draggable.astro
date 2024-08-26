@@ -5,17 +5,26 @@ interface Props {
   className?: string;
   coordinates?: Coordinates;
   minSize?: boolean;
+  rotate?: number;
+  width?: number;
+  height?: number;
 }
 
 let {
   className = "",
   coordinates = { x: 0, y: 0 },
+  rotate = 0,
   minSize = true,
+  width = 0,
+  height = 0,
 } = Astro.props;
 
 const options = {
   ...coordinates,
   minSize,
+  rotate,
+  width,
+  height,
   id: crypto.randomUUID(),
 };
 ---
@@ -23,7 +32,7 @@ const options = {
 <div
   x-data={`Draggable(${JSON.stringify(options)})`}
   x-bind="main"
-  style={`--left: ${coordinates.x}px; --top: ${coordinates.y}px`}
+  style={`--left: ${coordinates.x}px; --top: ${coordinates.y}px; --rotate: ${rotate}deg; width: ${width > 0 ? `${width}px` : "auto"}; height: ${height > 0 ? `${height}px` : "auto"};`}
   class={`-m-2 select-none group draggable ${className}`}
 >
   <div class="relative p-2">
@@ -64,11 +73,15 @@ const options = {
         y,
         id,
         minSize,
+        width,
+        height,
       }: {
         minSize: boolean;
         x: number;
         y: number;
         id: string;
+        width: number;
+        height: number;
       }) => ({
         minSize,
         draggableId: id,
@@ -76,7 +89,7 @@ const options = {
         selected: false,
         zIndex: 0,
         coordinates: { x: x, y: y },
-        size: { x: 0, y: 0 },
+        size: { x: width, y: height },
         cachedMinSize: { x: 0, y: 0 },
         screenCoordinates: { x: 0, y: 0 },
         init() {
@@ -307,6 +320,7 @@ const options = {
     @apply hover:cursor-move;
 
     --handle-size: 12px;
+    transform: rotate(var(--rotate));
 
     &.draggable--selected {
       .draggable-handle {
