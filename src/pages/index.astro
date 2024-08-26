@@ -76,6 +76,8 @@ projects.map(({ data: project, id }) => {
   <div
     class="viewport-screen bg-olive-light overflow-hidden"
     style="background-image: url(/assets/img/bg.svg)"
+    x-data
+    @viewport-screen-change-height.camel.stop="console.log('!!!', $event.detail); $el.style.setProperty('min-height', `${$event.detail}px`)"
   >
     <div class="viewport-wrapper p-0">
       <DraggableArea>

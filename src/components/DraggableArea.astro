@@ -24,9 +24,43 @@ const id = crypto.randomUUID();
     Alpine.data("DraggableArea", (id) => ({
       draggables: {},
       draggableAreaID: id,
+      height: 0,
+      heightBuffer: 230,
       moving: false,
       resizing: false,
       screen: { x: -1, y: -1 },
+      calculateHeight(draggables: {
+        [T: string]: {
+          z: number;
+          id: string;
+          selected: boolean;
+          width: number;
+          height: number;
+          x: number;
+          y: number;
+        };
+      }) {
+        console.log("<DraggableArea> calculating size");
+
+        const allDraggablesEl = this.$el.querySelectorAll(".draggable");
+        let tallestHeight = 0;
+        if (Object.keys(draggables).length === allDraggablesEl.length) {
+          for (const $draggable of Object.values(draggables)) {
+            if ($draggable.height && $draggable.y && $draggable.id) {
+              const lowerBound = $draggable.height + $draggable.y;
+              console.log($draggable.id, lowerBound);
+              if (tallestHeight < lowerBound) {
+                tallestHeight = lowerBound;
+              }
+            }
+          }
+          if (this.height < tallestHeight + this.heightBuffer) {
+            console.log("!!! change tallest:", tallestHeight);
+            this.height = tallestHeight + this.heightBuffer;
+            this.$dispatch("viewportScreenChangeHeight", this.height);
+          }
+        }
+      },
       init() {
         this.$watch("resizing", (isResizing) => {
           if (isResizing === false && this.moving === false) {
@@ -35,6 +69,9 @@ const id = crypto.randomUUID();
               className: { remove: ["cursor--hidden"] },
             });
           }
+        });
+        this.$watch("draggables", (draggables) => {
+          this.calculateHeight(draggables);
         });
       },
       endMove() {
@@ -90,6 +127,11 @@ const id = crypto.randomUUID();
               y: event.screenY,
             };
           }
+        },
+        [":style"]() {
+          return {
+            height: this.height ? `${this.height}px` : false,
+          };
         },
       },
     }));

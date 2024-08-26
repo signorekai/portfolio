@@ -113,13 +113,6 @@ const options = {
         cachedMinSize: { x: 0, y: 0 },
         screenCoordinates: { x: 0, y: 0 },
         init() {
-          // @ts-ignore
-          this.draggables[this.draggableId] = {
-            z: 0,
-            $el: this.$el,
-            selected: false,
-          };
-
           if (this.locked) this.selected = true;
 
           this.$watch("selected", (newSelected, oldSelected) => {
@@ -240,15 +233,33 @@ const options = {
             }
           });
 
+          this.$watch("size", (size, oldSize) => {
+            if (oldSize.y.toFixed(2) !== size.y.toFixed(2)) {
+              console.log(237, "resized!", oldSize.y, size.y);
+              // @ts-ignore
+              this.draggables[this.draggableId] = {
+                z: 0,
+                id: this.draggableId,
+                selected: this.selected,
+                width: size.x,
+                height: size.y,
+                x: this.coordinates.x,
+                y: this.coordinates.y,
+              };
+            }
+          });
+
           setTimeout(() => {
-            this.size = {
-              x: this.$refs.content?.getBoundingClientRect().width || 0,
-              y: this.$refs.content?.getBoundingClientRect().height || 0,
-            };
-            if (this.minSize && this.$refs.content) {
-              this.$refs.content.style.minWidth = `${this.size.x}px`;
-              this.$refs.content.style.minHeight = `${this.size.y}px`;
-              this.cachedMinSize = this.size;
+            if (this.$refs.content) {
+              this.size = {
+                x: this.$refs.content?.getBoundingClientRect().width || 0,
+                y: this.$refs.content?.getBoundingClientRect().height || 0,
+              };
+              if (this.minSize) {
+                this.$refs.content.style.minWidth = `${this.size.x}px`;
+                this.$refs.content.style.minHeight = `${this.size.y}px`;
+                this.cachedMinSize = this.size;
+              }
             }
           }, 100);
         },
