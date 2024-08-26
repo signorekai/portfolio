@@ -11,7 +11,16 @@ import Arrow from "@components/Arrow.astro";
 
 const projects = await getCollection(
   "projects",
-  ({ data }) => data.isDraft === false
+  ({ data }: CollectionEntry<"projects">) => data.isDraft === false
+);
+
+const entries: CollectionEntry<"blog"> = (
+  await getCollection("blog", ({ data }) => {
+    return import.meta.env.PROD ? data.isDraft !== true : true;
+  })
+).sort(
+  (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) =>
+    b.data.publishDate?.valueOf() - a.data.publishDate.valueOf()
 );
 
 export type PortfolioItem = CollectionEntry<"projects">["data"]["items"][0] & {
@@ -303,15 +312,15 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 10, y: 39 }} rotate={-3}>
           <div class="w-full h-full scale-[var(--scale)] origin-top-left">
-          <h2
+            <h2
               class="text-white outlined font-black leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
-            x-data="{hide:true}"
+              x-data="{hide:true}"
               x-intersect.once="hide=false"
               :class="{'opacity-0': hide, 'translate-y-6': hide}"
-          >
-            A creative coder, <br />coding designer, <br />or somewhere
-            inbetween
-          </h2>
+            >
+              A creative coder, <br />coding designer, <br />or somewhere
+              inbetween
+            </h2>
           </div>
         </Draggable>
       </DraggableArea>
