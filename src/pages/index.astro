@@ -7,6 +7,7 @@ import type { CollectionEntry } from "astro:content";
 import Draggable from "@components/Draggable.astro";
 import DraggableArea from "@components/DraggableArea.astro";
 import Eyes from "@components/Eyes.astro";
+import Arrow from "@components/Arrow.astro";
 
 const projects = await getCollection(
   "projects",
@@ -69,11 +70,11 @@ projects.map(({ data: project, id }) => {
   >
     <div class="viewport-wrapper p-0">
       <DraggableArea>
-        <Draggable coordinates={{ x: -30, y: -30 }}>
+        <Draggable coordinates={{ x: 121, y: -28 }}>
           <div
             class="skill-pill bg-maroon w-32 h-32 p-5 flex justify-center items-center animate-spin-slow"
           >
-            <span class="uppercase font-uncut leading-tight text-xl text-center"
+            <span class="uppercase leading-tight text-xl text-center"
               >Based <br />in <strong>SG</strong></span
             >
           </div>
@@ -188,6 +189,88 @@ projects.map(({ data: project, id }) => {
             <h2 class="">UI/UX</h2>
           </div>
         </Draggable>
+        <Draggable
+          coordinates={{ x: 460, y: 75 }}
+          width={340}
+          rotate={3}
+          controlPadding={0}
+          locked={true}
+        >
+          <div
+            class="bg-peach-light/95 w-full h-full default-transitions opacity-0 scale-150 p-5 text-center"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <span class="font-uncut text-lg"
+              >I believe that <em>"code is poetry"</em>, <br />and I love
+              transforming ideas into tangible solutions that makes a positive
+              impact in the world</span
+            >
+          </div>
+        </Draggable>
+        <div
+          class="absolute z-9980 bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-1 md:gap-2 max-w-[80vw] items-center justify-center w-max flex-wrap"
+        >
+          <a
+            href="mailto:signorekai@gmail.com"
+            target="_blank"
+            class="text-lg group scale-[var(--scale)] w-full mx-8 md:w-auto md:mx-0 flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            rel="noopener noreferrer"
+          >
+            <button class="link-button link-button--green py-2 w-full">
+              <span>Contact me</span>
+              <Arrow className="group-hover:translate-y-0.5" />
+            </button>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/alfred-lau-6230721a7/"
+            target="_blank"
+            class="text-lg group scale-[var(--scale)] flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            rel="noopener noreferrer"
+          >
+            <button class="link-button link-button--blue py-2">
+              <span>Linkedin</span>
+              <Arrow className="group-hover:translate-y-0.5" />
+            </button>
+          </a>
+          <a
+            href="https://instagram.com/signorekai"
+            target="_blank"
+            class="text-lg group scale-[var(--scale)] flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            rel="noopener noreferrer"
+          >
+            <button class="link-button link-button--green-electric py-2">
+              <span>Instagram</span>
+              <Arrow className="group-hover:translate-y-0.5" />
+            </button>
+          </a>
+          <div
+            class="w-full text-center font-bold opacity-80 scale-75 leading-tight"
+          >
+            Built with love, <br />using Astro, Alpine JS, TailwindCSS
+          </div>
+        </div>
+        <!-- <div
+          class="z-50 absolute bg-peach-light bottom-0 left-1/2 -translate-x-1/2 p-4 border-mobile-border-width lg:border-border-width"
+        >
+          <h2>Hello</h2>
+        </div> -->
+        <div
+          class="absolute"
+          x-data="{show:false}"
+          x-intersect.threshold.80="show=true"
+          x-intersect:leave="show=false"
+          :class="show && 'animate-wave'"
+          style="transform-origin: 65% 80%; left: -236px; top: 67px; width: 140px"
+        >
+          <img
+            src="/assets/img/wave.svg"
+            class="w-full h-full"
+            draggable="false"
+            alt=""
+          />
+        </div>
         <Draggable coordinates={{ x: 107, y: 335 }}>
           <div
             class="skill-pill bg-purple default-transitions opacity-0 scale-150"
@@ -205,7 +288,7 @@ projects.map(({ data: project, id }) => {
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-0': hide}"
           >
-            <h2 class="">Web Dev</h2>
+            <h2>Web Dev</h2>
           </div>
         </Draggable>
         <Draggable coordinates={{ x: 299, y: 101 }} rotate={10} height={98}>
@@ -219,15 +302,17 @@ projects.map(({ data: project, id }) => {
           </div>
         </Draggable>
         <Draggable coordinates={{ x: 10, y: 39 }} rotate={-3}>
+          <div class="w-full h-full scale-[var(--scale)] origin-top-left">
           <h2
-            class="text-white outlined scale-0 font-black leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
+              class="text-white outlined font-black leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
             x-data="{hide:true}"
-            x-intersect.full.once="hide=false"
-            :class="{'opacity-0': hide, 'translate-y-6': hide, 'scale-0': hide}"
+              x-intersect.once="hide=false"
+              :class="{'opacity-0': hide, 'translate-y-6': hide}"
           >
             A creative coder, <br />coding designer, <br />or somewhere
             inbetween
           </h2>
+          </div>
         </Draggable>
       </DraggableArea>
     </div>
