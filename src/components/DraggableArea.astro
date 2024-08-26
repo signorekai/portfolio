@@ -3,7 +3,7 @@ const id = crypto.randomUUID();
 ---
 
 <div class="draggable-wrapper" x-data={`DraggableArea("${id}")`} x-bind="area">
-  <div class="draggable-area">
+  <div class="draggable-area" x-resize.document="calculateHeight(draggables)">
     <slot />
   </div>
 </div>
