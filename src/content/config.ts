@@ -1,4 +1,4 @@
-import { z, defineCollection } from 'astro:content';
+import { z, defineCollection, reference } from 'astro:content';
 
 const projects = defineCollection({
   type: 'data',
@@ -24,4 +24,14 @@ const projects = defineCollection({
   })
 });
 
-export const collections = { projects };
+const blogCollection = defineCollection({
+  type: 'content', // v2.5.0 and later
+  schema: z.object({
+    isDraft: z.boolean(),
+    publishDate: z.date(),
+    title: z.string(),
+    relatedPosts: z.array(reference('blog')).optional(),
+  }),
+});
+
+export const collections = { projects, blog: blogCollection };
