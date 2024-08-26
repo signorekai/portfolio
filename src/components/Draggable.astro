@@ -8,6 +8,8 @@ interface Props {
   rotate?: number;
   width?: number;
   height?: number;
+  locked?: boolean;
+  controlPadding?: number;
 }
 
 let {
@@ -17,25 +19,33 @@ let {
   minSize = true,
   width = 0,
   height = 0,
+  locked = false,
+  controlPadding = 8,
 } = Astro.props;
 
 const options = {
   ...coordinates,
+  id: crypto.randomUUID(),
   minSize,
   rotate,
   width,
   height,
-  id: crypto.randomUUID(),
+  locked,
+  controlPadding,
 };
 ---
 
 <div
   x-data={`Draggable(${JSON.stringify(options)})`}
   x-bind="main"
-  style={`--left: ${coordinates.x}px; --top: ${coordinates.y}px; --rotate: ${rotate}deg; width: ${width > 0 ? `${width}px` : "auto"}; height: ${height > 0 ? `${height}px` : "auto"};`}
-  class={`-m-2 select-none group draggable ${className}`}
+  style={`--left: ${coordinates.x}px; --top: ${coordinates.y}px; --rotate: ${rotate}deg; user-drag: none`}
+  class={`select-none group draggable ${className}`}
 >
-  <div class="relative p-2">
+  <div
+    class="draggable-inner"
+    x-bind="inner"
+    style="padding: var(--controlPadding"
+  >
     <button
       x-bind="handle"
       data-direction="bottom-left"
@@ -49,18 +59,21 @@ const options = {
     <button x-bind="handle" data-direction="top-right" class="draggable-handle"
     ></button>
     <div
-      class="border opacity-0 absolute w-full h-full border-black group-hover:opacity-100 top-0 left-0 pointer-events-none"
-      :class="{'opacity-0': $data.selected === false}"
+      class="group-hover:opacity-100 draggable-border"
+      :class="{'opacity-0': this.selected === false}"
     >
       &nbsp;
     </div>
-    <div class="" inline-block x-ref="content" x-bind="content">
+    <div
+      class="inline-block"
+      x-ref="content"
+      x-bind="content"
+      x-resize="size={ x: $width, y: $height}"
+    >
       <slot />
     </div>
   </div>
 </div>
-
-<style></style>
 
 <script>
   import Alpine from "alpinejs";
@@ -75,6 +88,8 @@ const options = {
         minSize,
         width,
         height,
+        locked,
+        controlPadding,
       }: {
         minSize: boolean;
         x: number;
@@ -82,12 +97,17 @@ const options = {
         id: string;
         width: number;
         height: number;
+        locked: boolean;
+        controlPadding: number;
       }) => ({
+        locked,
         minSize,
         draggableId: id,
         hovering: false,
         selected: false,
         zIndex: 0,
+        scale: 1,
+        controlPadding,
         coordinates: { x: x, y: y },
         size: { x: width, y: height },
         cachedMinSize: { x: 0, y: 0 },
@@ -99,6 +119,8 @@ const options = {
             $el: this.$el,
             selected: false,
           };
+
+          if (this.locked) this.selected = true;
 
           this.$watch("selected", (newSelected, oldSelected) => {
             const allDraggables: { z: number; $el: HTMLElement }[] =
@@ -126,7 +148,7 @@ const options = {
           this.$watch("screen", (newCoords, oldCoords) => {
             console.log("this.screen changed");
             // @ts-ignore
-            if (this.selected && this.$data.moving) {
+            if (this.selected && this.$data.moving && this.locked === false) {
               window.getSelection()?.removeAllRanges();
 
               const delta = {
@@ -189,6 +211,17 @@ const options = {
                 ) {
                   this.coordinates = newCoordinates;
                   this.size = newSize;
+
+                  console.log(
+                    this.size.x,
+                    this.cachedMinSize.x,
+                    this.size.y,
+                    this.cachedMinSize.y
+                  );
+                  this.scale = Math.min(
+                    this.size.x / this.cachedMinSize.x,
+                    this.size.y / this.cachedMinSize.y
+                  );
                 }
               } else {
                 console.log(80, delta);
@@ -197,6 +230,12 @@ const options = {
                   y: this.coordinates.y + delta.y,
                 };
               }
+            } else if (
+              this.selected &&
+              this.$data.moving &&
+              this.locked === true
+            ) {
+              console.log(223);
             }
           });
 
@@ -210,7 +249,7 @@ const options = {
               this.$refs.content.style.minHeight = `${this.size.y}px`;
               this.cachedMinSize = this.size;
             }
-          }, 50);
+          }, 100);
         },
         content: {
           [":style"]() {
@@ -220,19 +259,37 @@ const options = {
             };
           },
         },
+        inner: {
+          [":style"]() {
+            return {
+              width:
+                this.size.x > 0
+                  ? `${this.size.x + this.controlPadding * 2}px`
+                  : "auto",
+              height:
+                this.size.y > 0
+                  ? `${this.size.y + this.controlPadding * 2}px`
+                  : "auto",
+            };
+          },
+        },
         main: {
           [":class"](): any {
             return {
               // @ts-ignore
               // "pointer-events-none": this.selected && this.$data.moving,
               "draggable--selected": this.selected,
+              "draggable--locked": this.locked,
             };
           },
           [":style"]() {
             return {
               zIndex: this.zIndex,
-              "--left": `${this.$data.coordinates.x}px`,
-              "--top": `${this.$data.coordinates.y}px`,
+              "--left": `${this.coordinates.x}px`,
+              "--top": `${this.coordinates.y}px`,
+              "--width": `${this.size.x}px`,
+              "--height": `${this.size.y}px`,
+              "--scale": this.scale,
             };
           },
           ["@draggable-cancel.dot.window"]({
@@ -244,13 +301,16 @@ const options = {
               // @ts-ignore
               this.draggableAreaID === detail.areaID &&
               (detail.hasOwnProperty("draggableID") === false ||
-                detail.draggableID !== this.draggableId)
+                detail.draggableID !== this.draggableId) &&
+              this.locked === false
             ) {
               this.selected = false;
             }
           },
           ["@keyup.escape.window"]() {
-            this.selected = false;
+            if (this.locked == false) {
+              this.selected = false;
+            }
           },
           ["@pointermove"]() {
             this.$dispatch("cursorChange", {
@@ -314,19 +374,50 @@ const options = {
   });
 </script>
 
-<style>
+<style define:vars={{ controlPadding: `${controlPadding}px` }}>
   .draggable {
-    @apply absolute origin-center top-var-top left-var-left;
-    @apply hover:cursor-move;
-
     --handle-size: 12px;
+    @apply absolute origin-center top-var-top left-var-left;
+    @apply hover:cursor-move font-platform;
+
+    margin: calc(var(--controlPadding) * -1);
     transform: rotate(var(--rotate));
+
+    img,
+    a {
+      -webkit-user-drag: none;
+    }
 
     &.draggable--selected {
       .draggable-handle {
         @apply opacity-100 visible pointer-events-auto;
       }
+
+      .draggable-border {
+        @apply opacity-100;
+      }
     }
+
+    &.draggable--locked {
+      --handle-size: 20px;
+      .draggable-handle,
+      .draggable-border {
+        @apply opacity-100 border-2 border-dashed;
+      }
+
+      .draggable-handle {
+        @apply bg-black;
+      }
+    }
+  }
+
+  .draggable-inner {
+    @apply relative;
+    padding: var(--controlPadding);
+  }
+
+  .draggable-border {
+    @apply border opacity-0 absolute w-full h-full border-black top-0 left-0 pointer-events-none;
   }
 
   .draggable-handle {
