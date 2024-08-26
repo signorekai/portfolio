@@ -77,6 +77,7 @@ const options = {
         zIndex: 0,
         coordinates: { x: x, y: y },
         size: { x: 0, y: 0 },
+        cachedMinSize: { x: 0, y: 0 },
         screenCoordinates: { x: 0, y: 0 },
         init() {
           // @ts-ignore
@@ -130,39 +131,51 @@ const options = {
                   | "bottom-left" = this.resizing;
 
                 console.log("resizing", direction);
+                let newSize: { x: number; y: number } = this.size;
+                let newCoordinates: { x: number; y: number } = this.coordinates;
+
                 if (direction === "top-right") {
-                  this.coordinates = {
+                  newCoordinates = {
                     x: this.coordinates.x,
                     y: this.coordinates.y + delta.y,
                   };
-                  this.size = {
+                  newSize = {
                     x: this.size.x + delta.x,
                     y: this.size.y - delta.y,
                   };
                 } else if (direction === "top-left") {
-                  this.coordinates = {
+                  newCoordinates = {
                     x: this.coordinates.x + delta.x,
                     y: this.coordinates.y + delta.y,
                   };
-                  this.size = {
+                  newSize = {
                     x: this.size.x - delta.x,
                     y: this.size.y - delta.y,
                   };
                 } else if (direction === "bottom-right") {
-                  this.size = {
+                  newSize = {
                     x: this.size.x + delta.x,
                     y: this.size.y + delta.y,
                   };
                 } else if (direction === "bottom-left") {
-                  this.coordinates = {
+                  newCoordinates = {
                     x: this.coordinates.x + delta.x,
                     y: this.coordinates.y,
                   };
 
-                  this.size = {
+                  newSize = {
                     x: this.size.x - delta.x,
                     y: this.size.y + delta.y,
                   };
+                }
+
+                if (
+                  this.minSize &&
+                  newSize.x >= this.cachedMinSize.x &&
+                  newSize.y >= this.cachedMinSize.y
+                ) {
+                  this.coordinates = newCoordinates;
+                  this.size = newSize;
                 }
               } else {
                 console.log(80, delta);
@@ -174,14 +187,17 @@ const options = {
             }
           });
 
-          this.size = {
-            x: this.$refs.content?.getBoundingClientRect().width || 0,
-            y: this.$refs.content?.getBoundingClientRect().height || 0,
-          };
-          if (this.minSize && this.$refs.content) {
-            this.$refs.content.style.minWidth = `${this.size.x}px`;
-            this.$refs.content.style.minHeight = `${this.size.y}px`;
-          }
+          setTimeout(() => {
+            this.size = {
+              x: this.$refs.content?.getBoundingClientRect().width || 0,
+              y: this.$refs.content?.getBoundingClientRect().height || 0,
+            };
+            if (this.minSize && this.$refs.content) {
+              this.$refs.content.style.minWidth = `${this.size.x}px`;
+              this.$refs.content.style.minHeight = `${this.size.y}px`;
+              this.cachedMinSize = this.size;
+            }
+          }, 50);
         },
         content: {
           [":style"]() {
@@ -252,6 +268,8 @@ const options = {
             console.log("Draggable @pointerup");
             // @ts-ignore
             this.endMove();
+            console.log("x:", this.coordinates.x);
+            console.log("y:", this.coordinates.y);
           },
           ["@pointerleave.passive"]() {
             this.hovering = false;
@@ -262,6 +280,7 @@ const options = {
               });
             }
           },
+          ["@touchstart.stop"]() {},
         },
         handle: {
           ["@pointerdown"](event: PointerEvent) {

@@ -2,13 +2,18 @@
 const id = crypto.randomUUID();
 ---
 
-<div class="draggable-area" x-data={`DraggableArea("${id}")`} x-bind="area">
-  <slot />
+<div class="draggable-wrapper" x-data={`DraggableArea("${id}")`} x-bind="area">
+  <div class="draggable-area">
+    <slot />
+  </div>
 </div>
 
 <style>
+  .draggable-wrapper {
+    @apply w-full h-full overflow-hidden flex items-center justify-center;
+  }
   .draggable-area {
-    @apply w-full h-full max-w-full max-h-full overflow-hidden;
+    @apply w-full max-w-sm h-full mx-auto relative;
   }
 </style>
 
@@ -46,6 +51,10 @@ const id = crypto.randomUUID();
       area: {
         ["@pointerdown.self"]() {
           console.log("DraggableArea @pointerdown");
+          this.$dispatch("draggable.cancel", { areaID: this.draggableAreaID });
+        },
+        ["@touchstart"]() {
+          console.log("DraggableArea @touchstart");
           this.$dispatch("draggable.cancel", { areaID: this.draggableAreaID });
         },
         ["@pointerup.debounce.32ms.passive"]() {
