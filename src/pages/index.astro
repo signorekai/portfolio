@@ -6,6 +6,7 @@ import Canvas from "../components/Canvas.astro";
 import type { CollectionEntry } from "astro:content";
 import Draggable from "@components/Draggable.astro";
 import DraggableArea from "@components/DraggableArea.astro";
+import Eyes from "@components/Eyes.astro";
 
 const projects = await getCollection(
   "projects",
@@ -62,12 +63,15 @@ projects.map(({ data: project, id }) => {
     </h3>
     <Canvas className="flex-1" portfolio={items} />
   </div>
-  <div class="viewport-screen bg-olive-light overflow-hidden">
+  <div
+    class="viewport-screen bg-olive-light overflow-hidden"
+    style="background-image: url(/assets/img/bg.svg)"
+  >
     <div class="viewport-wrapper p-0">
       <DraggableArea>
         <Draggable coordinates={{ x: -30, y: -30 }}>
           <div
-            class="skill-pill opacity-75 w-32 h-32 p-5 flex justify-center items-center animate-spin-slow bg-red"
+            class="skill-pill bg-maroon w-32 h-32 p-5 flex justify-center items-center animate-spin-slow"
           >
             <span class="uppercase font-uncut leading-tight text-xl text-center"
               >Based <br />in <strong>SG</strong></span
@@ -76,9 +80,9 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: -6, y: 188 }}>
           <div
-            class="skill-pill default-transitions opacity-0 scale-150"
+            class="skill-pill bg-green-electric text-black default-transitions opacity-0 scale-150"
             x-data="{hide:true}"
-            x-intersect.threshold.80.once="hide=false"
+            x-intersect.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
           >
             <h2 class="">Node.js</h2>
@@ -86,7 +90,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 99, y: 188 }}>
           <div
-            class="skill-pill default-transitions opacity-0 scale-150"
+            class="skill-pill bg-pink text-black default-transitions opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -96,7 +100,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 232, y: 188 }}>
           <div
-            class="skill-pill default-transitions opacity-0 scale-150"
+            class="skill-pill bg-blue-electric default-transitions opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -106,7 +110,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 321, y: 188 }}>
           <div
-            class="skill-pill default-transitions delay-[400ms] opacity-0 scale-150"
+            class="skill-pill bg-yellow-dark text-black default-transitions delay-[400ms] opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -116,7 +120,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 15, y: 237 }}>
           <div
-            class="skill-pill default-transitions delay-100 opacity-0 scale-150"
+            class="skill-pill bg-maroon default-transitions delay-100 opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -126,7 +130,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 165, y: 237 }}>
           <div
-            class="skill-pill default-transitions delay-300 opacity-0 scale-150"
+            class="skill-pill bg-purple-light text-black default-transitions delay-300 opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -136,7 +140,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 284, y: 237 }}>
           <div
-            class="skill-pill default-transitions delay-75 duration-300 opacity-0 scale-150"
+            class="skill-pill bg-blue-pale text-white default-transitions delay-75 duration-300 opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -146,17 +150,17 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 29, y: 286 }}>
           <div
-            class="skill-pill default-transitions opacity-0 scale-25"
+            class="skill-pill bg-orange default-transitions opacity-0 scale-[0.25]"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
-            :class="{'opacity-0': hide, 'scale-25': hide}"
+            :class="{'opacity-0': hide, 'scale-[0.25]': hide}"
           >
             <h2 class="">Preact</h2>
           </div>
         </Draggable>
         <Draggable coordinates={{ x: 124, y: 286 }}>
           <div
-            class="skill-pill default-transitions duration-300 opacity-0 scale-0"
+            class="skill-pill bg-purple-dark text-white default-transitions duration-300 opacity-0 scale-0"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-0': hide}"
@@ -166,7 +170,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 222, y: 286 }}>
           <div
-            class="skill-pill default-transitions delay-150 opacity-0 scale-[2]"
+            class="skill-pill bg-green default-transitions delay-150 opacity-0 scale-[2]"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-[2]': hide}"
@@ -176,7 +180,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 20, y: 335 }}>
           <div
-            class="skill-pill default-transitions opacity-0 scale-150"
+            class="skill-pill bg-olive default-transitions opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -186,7 +190,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 107, y: 335 }}>
           <div
-            class="skill-pill default-transitions opacity-0 scale-150"
+            class="skill-pill bg-purple default-transitions opacity-0 scale-150"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
@@ -196,7 +200,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <Draggable coordinates={{ x: 247, y: 335 }}>
           <div
-            class="skill-pill default-transitions delay-200 duration-300 opacity-0 scale-0"
+            class="skill-pill bg-peach text-black default-transitions delay-200 duration-300 opacity-0 scale-0"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-0': hide}"
@@ -204,9 +208,19 @@ projects.map(({ data: project, id }) => {
             <h2 class="">Web Dev</h2>
           </div>
         </Draggable>
-        <Draggable coordinates={{ x: 10, y: 39 }}>
+        <Draggable coordinates={{ x: 299, y: 101 }} rotate={10} height={98}>
+          <div
+            class="w-full h-full default-transitions opacity-0 scale-0"
+            x-data="{hide:true}"
+            x-intersect.full.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-0': hide}"
+          >
+            <Eyes className="text-peach-light w-full h-full" />
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 10, y: 39 }} rotate={-3}>
           <h2
-            class="text-white outlined scale-0 font-black -rotate-3 leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
+            class="text-white outlined scale-0 font-black leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
             x-data="{hide:true}"
             x-intersect.full.once="hide=false"
             :class="{'opacity-0': hide, 'translate-y-6': hide, 'scale-0': hide}"
