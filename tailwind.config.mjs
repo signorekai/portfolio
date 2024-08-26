@@ -5,6 +5,9 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		extend: {
+			transitionTimingFunction: {
+				'bounce': 'cubic-bezier(.51,.09,.38,1.34)',
+			},
 			keyframes: {
 				'viewport': {
 					'0%': { width: 0, height: 0 },
@@ -13,7 +16,8 @@ export default {
 			},
 			animation: {
 				'viewport-after': 'viewport-after 2s ease-in forward',
-				'viewport-before': 'viewport-before 2s ease-in forward'
+				'viewport-before': 'viewport-before 2s ease-in forward',
+				'spin-slow': 'spin 5s linear infinite'
 			},
 			boxShadow: {
 				window: '6px 6px 0px 0px #000',
@@ -57,6 +61,7 @@ export default {
 		fontFamily: {
 			aktiv: ['aktiv-grotesk-extended', ...defaultTheme.fontFamily.sans],
 			'recon-grotesk': ['BN Recon Grotesk', ...defaultTheme.fontFamily.sans],
+			'uncut': ['Uncut Sans', ...defaultTheme.fontFamily.sans],
 			platform: ['Platform', ...defaultTheme.fontFamily.sans],
 		},
 		colors: {
@@ -68,8 +73,11 @@ export default {
 				DEFAULT: '#FFDB58',
 			},
 			olive: {
-				DEFAULT:"#516B35",
+				DEFAULT: "#516B35",
 				light: "#929B87",
+			},
+			red: {
+				DEFAULT: "#ae0c0c",
 			},
 			green: {
 				DEFAULT: "#073F38",
