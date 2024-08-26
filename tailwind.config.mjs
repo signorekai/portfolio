@@ -41,6 +41,8 @@ export default {
 				'14': '3.5rem',
 				'border-width': 'var(--border-width)',
 				'mobile-border-width': 'var(--mobile-border-width)',
+				'var-top': 'var(--top)',
+				'var-left': 'var(--left)',
 			},
 			zIndex: {
 				'max': '10000',
