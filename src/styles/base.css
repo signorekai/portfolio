@@ -488,7 +488,7 @@
     @apply justify-center items-center;
 
     h2 {
-      @apply font-uncut normal-case text-xl;
+      @apply font-uncut normal-case text-xl text-nowrap;
     }
   }
 }
