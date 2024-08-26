@@ -1,0 +1,326 @@
+---
+import type { Coordinates } from "./Canvas.astro";
+
+interface Props {
+  className?: string;
+  coordinates?: Coordinates;
+  minSize?: boolean;
+}
+
+let {
+  className = "",
+  coordinates = { x: 0, y: 0 },
+  minSize = true,
+} = Astro.props;
+
+const options = {
+  ...coordinates,
+  minSize,
+  id: crypto.randomUUID(),
+};
+---
+
+<div
+  x-data={`Draggable(${JSON.stringify(options)})`}
+  x-bind="main"
+  style={`--left: ${coordinates.x}px; --top: ${coordinates.y}px`}
+  class={`-m-2 select-none group draggable ${className}`}
+>
+  <div class="relative p-2">
+    <button
+      x-bind="handle"
+      data-direction="bottom-left"
+      class="draggable-handle"></button>
+    <button
+      x-bind="handle"
+      data-direction="bottom-right"
+      class="draggable-handle"></button>
+    <button x-bind="handle" data-direction="top-left" class="draggable-handle"
+    ></button>
+    <button x-bind="handle" data-direction="top-right" class="draggable-handle"
+    ></button>
+    <div
+      class="border opacity-0 absolute w-full h-full border-black group-hover:opacity-100 top-0 left-0 pointer-events-none"
+      :class="{'opacity-0': $data.selected === false}"
+    >
+      &nbsp;
+    </div>
+    <div class="" inline-block x-ref="content" x-bind="content">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style></style>
+
+<script>
+  import Alpine from "alpinejs";
+
+  document.addEventListener("alpine:init", () => {
+    Alpine.data(
+      "Draggable",
+      ({
+        x,
+        y,
+        id,
+        minSize,
+      }: {
+        minSize: boolean;
+        x: number;
+        y: number;
+        id: string;
+      }) => ({
+        minSize,
+        draggableId: id,
+        hovering: false,
+        selected: false,
+        zIndex: 0,
+        coordinates: { x: x, y: y },
+        size: { x: 0, y: 0 },
+        screenCoordinates: { x: 0, y: 0 },
+        init() {
+          // @ts-ignore
+          this.draggables[this.draggableId] = {
+            z: 0,
+            $el: this.$el,
+            selected: false,
+          };
+
+          this.$watch("selected", (newSelected, oldSelected) => {
+            const allDraggables: { z: number; $el: HTMLElement }[] =
+              // @ts-ignore
+              this.draggables as const;
+            // @ts-ignore
+            this.draggables[this.draggableId]["selected"] = true;
+            if (newSelected === true && oldSelected === false) {
+              console.log("selected change, bump up zIndex");
+              let highest = 0;
+
+              for (const value of Object.values(allDraggables)) {
+                if (highest <= value.z) {
+                  highest = value.z;
+                  highest++;
+                }
+              }
+
+              // @ts-ignore
+              this.draggables[this.draggableId]["z"] = highest;
+              this.zIndex = highest;
+            }
+          });
+
+          this.$watch("screen", (newCoords, oldCoords) => {
+            console.log("this.screen changed");
+            // @ts-ignore
+            if (this.selected && this.$data.moving) {
+              window.getSelection()?.removeAllRanges();
+
+              const delta = {
+                x: oldCoords.x === -1 ? 0 : newCoords.x - oldCoords.x,
+                y: oldCoords.y === -1 ? 0 : newCoords.y - oldCoords.y,
+              };
+
+              // @ts-ignore
+              if (this.resizing) {
+                const direction:
+                  | "top-right"
+                  | "top-left"
+                  | "bottom-right"
+                  // @ts-ignore
+                  | "bottom-left" = this.resizing;
+
+                console.log("resizing", direction);
+                if (direction === "top-right") {
+                  this.coordinates = {
+                    x: this.coordinates.x,
+                    y: this.coordinates.y + delta.y,
+                  };
+                  this.size = {
+                    x: this.size.x + delta.x,
+                    y: this.size.y - delta.y,
+                  };
+                } else if (direction === "top-left") {
+                  this.coordinates = {
+                    x: this.coordinates.x + delta.x,
+                    y: this.coordinates.y + delta.y,
+                  };
+                  this.size = {
+                    x: this.size.x - delta.x,
+                    y: this.size.y - delta.y,
+                  };
+                } else if (direction === "bottom-right") {
+                  this.size = {
+                    x: this.size.x + delta.x,
+                    y: this.size.y + delta.y,
+                  };
+                } else if (direction === "bottom-left") {
+                  this.coordinates = {
+                    x: this.coordinates.x + delta.x,
+                    y: this.coordinates.y,
+                  };
+
+                  this.size = {
+                    x: this.size.x - delta.x,
+                    y: this.size.y + delta.y,
+                  };
+                }
+              } else {
+                console.log(80, delta);
+                this.coordinates = {
+                  x: this.coordinates.x + delta.x,
+                  y: this.coordinates.y + delta.y,
+                };
+              }
+            }
+          });
+
+          this.size = {
+            x: this.$refs.content?.getBoundingClientRect().width || 0,
+            y: this.$refs.content?.getBoundingClientRect().height || 0,
+          };
+          if (this.minSize && this.$refs.content) {
+            this.$refs.content.style.minWidth = `${this.size.x}px`;
+            this.$refs.content.style.minHeight = `${this.size.y}px`;
+          }
+        },
+        content: {
+          [":style"]() {
+            return {
+              width: this.size.x > 0 ? `${this.size.x}px` : "auto",
+              height: this.size.y > 0 ? `${this.size.y}px` : "auto",
+            };
+          },
+        },
+        main: {
+          [":class"](): any {
+            return {
+              // @ts-ignore
+              // "pointer-events-none": this.selected && this.$data.moving,
+              "draggable--selected": this.selected,
+            };
+          },
+          [":style"]() {
+            return {
+              zIndex: this.zIndex,
+              "--left": `${this.$data.coordinates.x}px`,
+              "--top": `${this.$data.coordinates.y}px`,
+            };
+          },
+          ["@draggable-cancel.dot.window"]({
+            detail,
+          }: {
+            detail: { areaID: string; draggableID?: string };
+          }) {
+            if (
+              // @ts-ignore
+              this.draggableAreaID === detail.areaID &&
+              (detail.hasOwnProperty("draggableID") === false ||
+                detail.draggableID !== this.draggableId)
+            ) {
+              this.selected = false;
+            }
+          },
+          ["@keyup.escape.window"]() {
+            this.selected = false;
+          },
+          ["@pointermove"]() {
+            this.$dispatch("cursorChange", {
+              className: { add: ["cursor--hidden"] },
+            });
+          },
+          ["@pointerdown"](event: PointerEvent) {
+            console.log("Draggable @pointerdown");
+            if (event.shiftKey === false && this.selected === false) {
+              this.$dispatch("draggable.cancel", {
+                // @ts-ignore
+                areaID: this.draggableAreaID,
+                draggableID: this.draggableId,
+              });
+            }
+
+            this.selected = true;
+            // @ts-ignore
+            this.$data.moving = true;
+            this.$dispatch("hideOverflow");
+            // search for zIndexes of all siblings
+            // bump up to the highest
+          },
+          ["@pointerenter.passive"]() {
+            this.hovering = true;
+          },
+          ["@pointerup.stop"]() {
+            console.log("Draggable @pointerup");
+            // @ts-ignore
+            this.endMove();
+          },
+          ["@pointerleave.passive"]() {
+            this.hovering = false;
+            // @ts-ignore
+            if (!this.moving) {
+              this.$dispatch("cursorChange", {
+                className: { remove: ["cursor--hidden"] },
+              });
+            }
+          },
+        },
+        handle: {
+          ["@pointerdown"](event: PointerEvent) {
+            // @ts-ignore
+            this.resizing = this.$el.getAttribute("data-direction");
+            console.log("Draggable Handle @pointerdown");
+            console.log(event);
+          },
+          ["@pointerup"](event: PointerEvent) {
+            // @ts-ignore
+            this.resizing = false;
+            console.log("Draggable Handle @pointerup");
+            console.log(event);
+          },
+        },
+      })
+    );
+  });
+</script>
+
+<style>
+  .draggable {
+    @apply absolute origin-center top-var-top left-var-left;
+    @apply hover:cursor-move;
+
+    --handle-size: 12px;
+
+    &.draggable--selected {
+      .draggable-handle {
+        @apply opacity-100 visible pointer-events-auto;
+      }
+    }
+  }
+
+  .draggable-handle {
+    @apply border border-black bg-white;
+    @apply absolute z-10 opacity-0 invisible pointer-events-none;
+    @apply origin-center scale-150 lg:scale-100;
+    width: var(--handle-size);
+    height: var(--handle-size);
+
+    &[data-direction="top-right"] {
+      top: calc(var(--handle-size) * -0.5);
+      right: calc(var(--handle-size) * -0.5);
+    }
+
+    &[data-direction="top-left"] {
+      top: calc(var(--handle-size) * -0.5);
+      left: calc(var(--handle-size) * -0.5);
+    }
+
+    &[data-direction="bottom-right"] {
+      bottom: calc(var(--handle-size) * -0.5);
+      right: calc(var(--handle-size) * -0.5);
+    }
+
+    &[data-direction="bottom-left"] {
+      bottom: calc(var(--handle-size) * -0.5);
+      left: calc(var(--handle-size) * -0.5);
+    }
+  }
+</style>

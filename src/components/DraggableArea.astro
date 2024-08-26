@@ -1,0 +1,88 @@
+---
+const id = crypto.randomUUID();
+---
+
+<div class="draggable-area" x-data={`DraggableArea("${id}")`} x-bind="area">
+  <slot />
+</div>
+
+<style>
+  .draggable-area {
+    @apply w-full h-full max-w-full max-h-full overflow-hidden;
+  }
+</style>
+
+<script>
+  import Alpine from "alpinejs";
+
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("DraggableArea", (id) => ({
+      draggables: {},
+      draggableAreaID: id,
+      moving: false,
+      resizing: false,
+      screen: { x: -1, y: -1 },
+      init() {
+        this.$watch("resizing", (isResizing) => {
+          if (isResizing === false && this.moving === false) {
+            console.log(34);
+            this.$dispatch("cursorChange", {
+              className: { remove: ["cursor--hidden"] },
+            });
+          }
+        });
+      },
+      endMove() {
+        this.moving = false;
+        this.resizing = false;
+        this.screen = { x: -1, y: -1 };
+
+        // this.showOverflow from <Layout />
+        // @ts-ignore
+        if (this.showOverflow === false) {
+          this.$dispatch("showOverflow");
+        }
+      },
+      area: {
+        ["@pointerdown.self"]() {
+          console.log("DraggableArea @pointerdown");
+          this.$dispatch("draggable.cancel", { areaID: this.draggableAreaID });
+        },
+        ["@pointerup.debounce.32ms.passive"]() {
+          console.log("DraggableArea @pointerup");
+          this.endMove();
+        },
+        ["@pointerleave.debounce.32ms.passive"]() {
+          console.log("DraggableArea @pointerleave");
+          this.endMove();
+        },
+        ["@touchend.debounce.32ms.passive"]() {
+          console.log("DraggableArea @touchend");
+          this.endMove();
+        },
+        ["@touchcancel.debounce.32ms.passive"]() {
+          console.log("DraggableArea @touchcancel");
+          this.endMove();
+        },
+        ["@touchmove.passive.throttle.16ms"](event: TouchEvent) {
+          if (this.moving) {
+            console.log("DraggableArea @touchmove moving");
+            this.screen = {
+              x: event.touches[0]!.clientX,
+              y: event.touches[0]!.clientY,
+            };
+          }
+        },
+        ["@mousemove.passive"](event: PointerEvent) {
+          if (this.moving) {
+            console.log("DraggableArea @mousemove moving");
+            this.screen = {
+              x: event.screenX,
+              y: event.screenY,
+            };
+          }
+        },
+      },
+    }));
+  });
+</script>
