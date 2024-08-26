@@ -14,14 +14,14 @@ const projects = await getCollection(
   ({ data }: CollectionEntry<"projects">) => data.isDraft === false
 );
 
-const entries: CollectionEntry<"blog"> = (
-  await getCollection("blog", ({ data }) => {
-    return import.meta.env.PROD ? data.isDraft !== true : true;
-  })
-).sort(
-  (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) =>
-    b.data.publishDate?.valueOf() - a.data.publishDate.valueOf()
-);
+// const entries: CollectionEntry<"blog"> = (
+//   await getCollection("blog", ({ data }) => {
+//     return import.meta.env.PROD ? data.isDraft !== true : true;
+//   })
+// ).sort(
+//   (a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) =>
+//     b.data.publishDate?.valueOf() - a.data.publishDate.valueOf()
+// );
 
 export type PortfolioItem = CollectionEntry<"projects">["data"]["items"][0] & {
   projectTitle: string;
