@@ -78,17 +78,14 @@ const { title = "" } = Astro.props;
         ["@hide-overflow.camel.window.passive"]() {
           this.scrollPosition = this.$refs.bodyWrapper?.scrollTop || 0;
           this.$data.showOverflow = false;
+          this.$el.classList.add("lock-scroll");
         },
         ["@show-overflow.camel.window.passive"]() {
           this.showOverflow = true;
-          setTimeout(() => {
+          this.$nextTick(() => {
+            this.$el.classList.remove("lock-scroll");
             this.$refs.bodyWrapper?.scrollTo(0, this.scrollPosition);
-          }, 1);
-        },
-        [":class"]() {
-          return {
-            "lock-scroll": this.showOverflow === false,
-          };
+          });
         },
         [":style"]() {
           return {
