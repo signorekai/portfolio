@@ -99,17 +99,13 @@ const { title = "" } = Astro.props;
     }));
 
     Alpine.data("Cursor", () => ({
-      initialised: false,
+      initialised: true,
       init() {
         this.$el.classList.remove("opacity-0");
         setTimeout(() => {
           this.$el.classList.remove("duration-250", "transition-opacity");
           this.$el.classList.add("duration-0", "transition-transform");
         }, 300);
-
-        setTimeout(() => {
-          this.initialised = true;
-        }, 2000);
       },
       cursorPosition: {
         x: document.documentElement.clientWidth / 2 || 0,
