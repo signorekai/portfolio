@@ -12,12 +12,20 @@ export default {
 				'viewport': {
 					'0%': { width: 0, height: 0 },
 					'100%': { width: '100%', height: '100%' },
-				}
+				},
+				'wave': {
+					'0%': { transform: 'rotate(-3deg)'},
+					'25%': { transform: 'rotate(-13deg)'},
+					'50%': { transform: 'rotate(-3deg)'},
+					'75%': { transform: 'rotate(7deg)'},
+					'100%': { transform: 'rotate(-3deg)'},
+				},
 			},
 			animation: {
 				'viewport-after': 'viewport-after 2s ease-in forward',
 				'viewport-before': 'viewport-before 2s ease-in forward',
-				'spin-slow': 'spin 5s linear infinite'
+				'spin-slow': 'spin 5s linear infinite',
+				'wave': 'wave 0.3s ease-in-out 2'
 			},
 			boxShadow: {
 				window: '6px 6px 0px 0px #000',
