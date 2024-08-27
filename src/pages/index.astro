@@ -225,7 +225,7 @@ projects.map(({ data: project, id }) => {
         </Draggable>
         <div
           x-data="{ show: false }"
-          x-intersect.threshold.80.once="show=true"
+          x-intersect.half.once="show=true"
           class="absolute z-9980 bottom-4 left-1/2 opacity-0 default-transitions translate-y-4 -translate-x-1/2 flex flex-row gap-1 md:gap-2 max-w-[80vw] items-center justify-center w-max flex-wrap"
           x-bind:class="show && '!translate-y-0 !opacity-100'"
         >
@@ -333,14 +333,54 @@ projects.map(({ data: project, id }) => {
             </h2>
           </div>
         </Draggable>
-        <Draggable coordinates={{ x: -353, y: 190 }}>
+        <Draggable
+          width={128}
+          height={128}
+          coordinates={{ x: -353, y: 190 }}
+          rotate={-8}
+        >
           <div
-            class="default-transitions opacity-0 scale-150 w-32 h-32 rounded-full overflow-hidden border-2 border-dashed"
+            class="default-transitions opacity-0 scale-150 w-full h-full rounded-full overflow-hidden border-4 shadow-window shadow-olive"
             x-data="{hide:true}"
             x-intersect.threshold.80.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
           >
-            <Image src={ProfilePhoto} draggable={false} alt="" />
+            <Image
+              src={ProfilePhoto}
+              class="object-cover object-center h-full w-full"
+              draggable={false}
+              alt=""
+            />
+          </div>
+        </Draggable>
+        <Draggable coordinates={{ x: 542, y: 340 }} locked={true}>
+          <div
+            class="default-transitions opacity-0 scale-150 w-32"
+            x-data="{hide:true}"
+            x-intersect.threshold.80.once="hide=false"
+            :class="{'opacity-0': hide, 'scale-150': hide}"
+          >
+            <div class="relative">
+              <div
+                class="absolute top-1/2 w-48 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-green-electric px-4 py-2 overflow-hidden -rotate-6"
+              >
+                <ul
+                  class="marquee font-aktiv font-black text-lg w-max text-black outlineduppercase"
+                  x-bind="container"
+                  x-data="Marquee({speed: 0.25, dynamicWidthElments: true, pauseWhileHover: false})"
+                >
+                  <li>BLOG UNDER CONSTRUCTION</li>
+                </ul>
+              </div>
+              <Image
+                width={130}
+                height={161}
+                src="/assets/img/stacks.svg"
+                class="object-cover object-center h-full w-full"
+                draggable={false}
+                alt=""
+              />
+            </div>
           </div>
         </Draggable>
       </DraggableArea>

@@ -501,6 +501,15 @@
     @apply hidden;
   }
 
+  .shadow {
+    @apply shadow-window;
+  }
+
+  /* .shadow::after {
+    content: "";
+    @apply bg-black w-full absolute -z-0 h-full -bottom-1
+  } */
+
   .default-transitions {
     @apply transition-all duration-700 ease-bounce;
   }
