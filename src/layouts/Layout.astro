@@ -40,6 +40,18 @@ const {
     <title>{title}</title>
   </head>
   <body>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2GW1VRMN77"
+    ></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-2GW1VRMN77");
+    </script>
     <div
       class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
       x-bind="cursor"
