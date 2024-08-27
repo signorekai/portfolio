@@ -203,14 +203,12 @@ export default (Alpine) => {
           },
         },
         async resize() {
-          console.log(200)
           // Reset to original number of elements
           this.$el.innerHTML = this.originalElement.innerHTML
 
           // Keep cloning elements until marquee starts to overflow
           let i = 0
           while (this.$el.scrollWidth <= this.$el.clientWidth && this.$el.clientWidth > 0) {
-            console.log(212, this.$el.clientWidth)
             if (this.dynamicWidthElements) {
               // If we don't give this.$el time to recalculate its dimensions
               // when adding child nodes, the scrollWidth and clientWidth won't
