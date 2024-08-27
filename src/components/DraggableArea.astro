@@ -45,6 +45,8 @@ const id = crypto.randomUUID();
       draggableAreaID: id,
       height: 0,
       heightBuffer: 230,
+      mobileHeightBuffer: 100,
+      isMobile: false,
       moving: false,
       resizing: false,
       screen: { x: -1, y: -1 },
@@ -56,9 +58,18 @@ const id = crypto.randomUUID();
           const tallestHeight = Math.max(
             ...Object.values(draggables).map(({ bounds }) => bounds[3][1])
           );
-          if (this.height < tallestHeight + this.heightBuffer) {
-            console.log("<DraggableArea> size changed to:", tallestHeight);
-            this.height = tallestHeight + this.heightBuffer;
+          const buffer = this.isMobile
+            ? this.mobileHeightBuffer
+            : this.heightBuffer;
+
+          console.log(65, buffer);
+
+          if (this.height < tallestHeight + buffer) {
+            console.log(
+              "<DraggableArea> size changed to:",
+              tallestHeight + buffer
+            );
+            this.height = tallestHeight + buffer;
             this.$dispatch("viewportScreenChangeHeight", this.height);
           } else {
             console.log("<DraggableArea> unchanged:", this.height);
@@ -69,6 +80,7 @@ const id = crypto.randomUUID();
         }
       },
       init() {
+        this.checkWidth();
         this.$watch("resizing", (isResizing) => {
           if (isResizing === false && this.moving === false) {
             this.$dispatch("cursorChange", {
@@ -97,7 +109,16 @@ const id = crypto.randomUUID();
           this.$dispatch("showOverflow");
         }
       },
+      checkWidth() {
+        const width = window.visualViewport
+          ? window.visualViewport.width
+          : window.innerWidth;
+        this.isMobile = width <= 768;
+      },
       area: {
+        ["@resize.window.passive.throttle.200ms"]() {
+          this.checkWidth();
+        },
         ["@pointerdown.self"]() {
           console.log("DraggableArea @pointerdown");
         },
