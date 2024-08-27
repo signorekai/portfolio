@@ -401,7 +401,7 @@ let { className, portfolio } = Astro.props;
             "block--moving": this.mode === "moving",
           };
         },
-        ["@mouseenter.self"]() {
+        ["@mouseenter.self.passive"]() {
           this.$dispatch("cursorChange", {
             className: {
               add: ["cursor--hidden"],
@@ -415,7 +415,7 @@ let { className, portfolio } = Astro.props;
             },
           });
         },
-        ["@mouseleave.self"]() {
+        ["@mouseleave.self.passive"]() {
           this.$dispatch("cursorChange", {
             className: {
               remove: ["cursor--hidden"],
