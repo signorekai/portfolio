@@ -94,7 +94,7 @@ projects.map(({ data: project, id }) => {
           <div
             class="skill-pill bg-green-electric text-black default-transitions opacity-0 scale-150"
             x-data="{hide:true}"
-            x-intersect.once="hide=false"
+            x-intersect.threshold.30.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
           >
             <h2 class="">Node.js</h2>
@@ -124,7 +124,7 @@ projects.map(({ data: project, id }) => {
           <div
             class="skill-pill bg-yellow-dark text-black default-transitions delay-[400ms] opacity-0 scale-150"
             x-data="{hide:true}"
-            x-intersect.threshold.80.once="hide=false"
+            x-intersect.threshold.30.once="hide=false"
             :class="{'opacity-0': hide, 'scale-150': hide}"
           >
             <h2 class="">Vue</h2>
