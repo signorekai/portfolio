@@ -145,73 +145,70 @@ export default (Alpine) => {
       }
     }))
 
-    Alpine.data('Marquee', ({ speed = 1, spaceX = 0, dynamicWidthElements = false, mode = 'autoplay', pauseWhileHover = true }) => ({
-      dynamicWidthElements,
-      debouncedResize: null,
-      setWidth() {
-        const originalWidth = this.$el.scrollWidth + spaceX * 4
-        // Required for the marquee scroll animation 
-        // to loop smoothly without jumping 
-        this.$el.style.setProperty('--marquee-width', originalWidth + 'px')
-        this.$el.style.setProperty(
-          '--marquee-time',
-          ((1 / speed) * originalWidth) / 100 + 's'
-        )
-      },
-      container: {
-        [':class']() {
-          return {
-            'marquee--autoplay': mode === 'autoplay',
-            'marquee--autopause': pauseWhileHover && mode === 'autoplay',
-          }
-        }
-      },
-      async init() {
-        if (this.dynamicWidthElements) {
-          const images = this.$el.querySelectorAll('img')
-          // If there are any images, make sure they are loaded before
-          // we start cloning them, since their width might be dynamically
-          // calculated
-          if (images) {
-            await Promise.all(
-              Array.from(images).map(image => {
-                return new Promise((resolve, _) => {
-                  if (image.complete) {
-                    resolve()
-                  } else {
-                    image.addEventListener('load', () => {
+
+    Alpine.data(
+      'Marquee',
+      ({ speed = 1, spaceX = 0, dynamicWidthElements = false, mode = 'autoplay', pauseWhileHover = true }) => ({
+        dynamicWidthElements,
+        originalElement: false,
+        async init() {
+          if (this.dynamicWidthElements) {
+            const images = this.$el.querySelectorAll('img')
+            // If there are any images, make sure they are loaded before
+            // we start cloning them, since their width might be dynamically
+            // calculated
+            if (images) {
+              await Promise.all(
+                Array.from(images).map(image => {
+                  return new Promise((resolve, _) => {
+                    if (image.complete) {
                       resolve()
-                    })
-                  }
+                    } else {
+                      image.addEventListener('load', () => {
+                        resolve()
+                      })
+                    }
+                  })
                 })
-              })
-            )
+              )
+            }
           }
-        }
+          
+          // Store the original element so we can restore it on screen resize later
+          this.originalElement = this.$el.cloneNode(true)
+          const originalWidth = this.$el.scrollWidth + spaceX * 4
+          // Required for the marquee scroll animation 
+          // to loop smoothly without jumping 
+          this.$el.style.setProperty('--marquee-width', originalWidth + 'px')
+          this.$el.style.setProperty(
+            '--marquee-time',
+            ((1 / speed) * originalWidth) / 100 + 's'
+          )
+          this.resize()
+          // Make sure the resize function can only be called once every 100ms
+          // Not strictly necessary but stops lag when resizing window a bit
+        },
+        container: {
+          [':class']() {
+            return {
+              'marquee--autoplay': mode === 'autoplay',
+              'marquee--autopause': pauseWhileHover && mode === 'autoplay',
+            }
+          },
+          ["x-resize.document"]() {
+            const debouncedResize = debounce(100, () => {
+              this.resize();
+            })
+            debouncedResize();
+          },
+        },
+        async resize() {
+          console.log(200)
+          // Reset to original number of elements
+          this.$el.innerHTML = this.originalElement.innerHTML
 
-        // Store the original element so we can restore it on screen resize later
-        this.originalElement = this.$el.cloneNode(true)
-
-        this.setWidth();
-        this.resize();
-        this.debouncedResize = debounce(100, this.resize.bind(this));
-        // Make sure the resize function can only be called once every 100ms
-        // Not strictly necessary but stops lag when resizing window a bit
-        window.addEventListener('resize', this.debouncedResize)
-      },
-      destroy() {
-        window.removeEventListener('resize', this.debouncedResize)
-      },
-      async resize() {
-        // Reset to original number of elements
-        this.$el.innerHTML = this.originalElement.innerHTML
-  
-        // Keep cloning elements until marquee starts to overflow
-        let i = 0
-
-        const computedStyles = window.getComputedStyle(this.$el);
-
-        if (computedStyles.display !== 'none') {
+          // Keep cloning elements until marquee starts to overflow
+          let i = 0
           while (this.$el.scrollWidth <= this.$el.clientWidth) {
             if (this.dynamicWidthElements) {
               // If we don't give this.$el time to recalculate its dimensions
@@ -228,24 +225,20 @@ export default (Alpine) => {
             }
             i += 1
             i = i % this.originalElement.childElementCount
-            
-            // Add another (original element count) of clones so the animation
-            // has enough elements off-screen to scroll into view
-            let j = 0
-            while (j < this.originalElement.childElementCount) {
-              this.$el.appendChild(this.originalElement.children[i].cloneNode(true))
-              j += 1
-              i += 1
-              i = i % this.originalElement.childElementCount
-            }
           }
-        }
 
-        if(computedStyles.getPropertyValue('--marquee-width') === '0px') {
-          this.setWidth();
-        }
-      },
-    }));
+          // Add another (original element count) of clones so the animation
+          // has enough elements off-screen to scroll into view
+          let j = 0
+          while (j < this.originalElement.childElementCount) {
+            this.$el.appendChild(this.originalElement.children[i].cloneNode(true))
+            j += 1
+            i += 1
+            i = i % this.originalElement.childElementCount
+          }
+        },
+      })
+    )
   })
 
 
