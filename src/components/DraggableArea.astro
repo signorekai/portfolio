@@ -1,5 +1,21 @@
 ---
+export interface DraggablesObject {
+  [T: string]: {
+    z: number;
+    id: string;
+    selected: boolean;
+    width: number;
+    height: number;
+    x: number;
     y: number;
+    bounds: [
+      TopLeft: [number, number],
+      TopRight: [number, number],
+      BottomRight: [number, number],
+      BottomLeft: [number, number],
+    ];
+  };
+}
 const id = crypto.randomUUID();
 ---
 
