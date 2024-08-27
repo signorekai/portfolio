@@ -119,6 +119,21 @@ const options = {
         cachedMinSize: { x: 0, y: 0 },
         screenCoordinates: { x: 0, y: 0 },
         updateDraggablesArray() {
+          const bounds: [
+            TopLeft: [number, number],
+            TopRight: [number, number],
+            BottomRight: [number, number],
+            BottomLeft: [number, number],
+          ] = [
+            [this.coordinates.x, this.coordinates.y],
+            [this.coordinates.x, this.coordinates.y + this.size.y],
+            [
+              this.coordinates.x + this.size.x,
+              this.coordinates.y + this.size.y,
+            ],
+            [this.coordinates.x, this.coordinates.y + this.size.y],
+          ];
+
           // @ts-ignore
           this.draggables[this.draggableId] = {
             z: this.zIndex,
@@ -128,6 +143,7 @@ const options = {
             height: this.size.y,
             x: this.coordinates.x,
             y: this.coordinates.y,
+            bounds,
           };
         },
         init() {
@@ -308,16 +324,8 @@ const options = {
               this.$refs.content.style.minHeight = `${this.size.y}px`;
               this.cachedMinSize = { ...this.size };
             }
-            // @ts-ignore
-            this.draggables[this.draggableId] = {
-              z: this.zIndex,
-              id: this.draggableId,
-              selected: this.selected,
-              width: this.size.x,
-              height: this.size.y,
-              x: this.coordinates.x,
-              y: this.coordinates.y,
-            };
+
+            this.updateDraggablesArray();
 
             // this.size = {
             //   x: this.$refs.content?.getBoundingClientRect().width || 0,
