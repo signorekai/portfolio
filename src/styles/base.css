@@ -33,26 +33,6 @@
 }
 
 @font-face {
-	font-family: 'Uncut Sans';
-	src: url('/assets/fonts/UncutSans-Regular.woff2') format('woff2'),
-			url('/assets/fonts/UncutSans-Regular.woff') format('woff'),
-			url('/assets/fonts/UncutSans-Regular.svg#UncutSansRegular') format('svg');
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Uncut Sans';
-	src: url('/assets/fonts/UncutSans-Bold.woff2') format('woff2'),
-			url('/assets/fonts/UncutSans-Bold.woff') format('woff'),
-			url('/assets/fonts/UncutSans-Bold.svg#UncutSansBold') format('svg');
-	font-weight: bold;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
 	font-family: 'BN Recon Grotesk';
 	src: url('/assets/fonts/BNReconGroteskRegular.woff2') format('woff2'),
 			url('/assets/fonts/BNReconGroteskRegular.woff') format('woff'),
