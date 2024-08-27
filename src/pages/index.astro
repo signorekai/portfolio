@@ -206,6 +206,7 @@ projects.map(({ data: project, id }) => {
           rotate={3}
           controlPadding={0}
           locked={true}
+          debug={true}
         >
           <div
             class="bg-peach-light/95 w-full h-full default-transitions opacity-0 scale-150 p-5 text-center"
@@ -221,12 +222,15 @@ projects.map(({ data: project, id }) => {
           </div>
         </Draggable>
         <div
-          class="absolute z-9980 bottom-4 left-1/2 -translate-x-1/2 flex flex-row gap-1 md:gap-2 max-w-[80vw] items-center justify-center w-max flex-wrap"
+          x-data="{ show: false }"
+          x-intersect.threshold.80.once="show=true"
+          class="absolute z-9980 bottom-4 left-1/2 opacity-0 default-transitions translate-y-4 -translate-x-1/2 flex flex-row gap-1 md:gap-2 max-w-[80vw] items-center justify-center w-max flex-wrap"
+          x-bind:class="show && '!translate-y-0 !opacity-100'"
         >
           <a
             href="mailto:signorekai@gmail.com"
             target="_blank"
-            class="text-lg group scale-[var(--scale)] w-full mx-8 md:w-auto md:mx-0 flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            class="text-lg group w-full mx-8 md:w-auto md:mx-0 flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
             rel="noopener noreferrer"
           >
             <button class="link-button link-button--green py-2 w-full">
@@ -312,13 +316,15 @@ projects.map(({ data: project, id }) => {
             <Eyes className="text-peach-light w-full h-full" />
           </div>
         </Draggable>
-        <Draggable coordinates={{ x: 10, y: 39 }} rotate={-3}>
-          <div class="w-full h-full scale-[var(--scale)] origin-top-left">
+        <Draggable coordinates={{ x: 10, y: 39 }} rotate={-3} debug={true}>
+          <div
+            class="w-full h-full origin-top-left default-transitions ease-bounce opacity-0 translate-y-6"
+            x-data="{hide:true}"
+            x-intersect.once="hide=false"
+            :class="{'opacity-0': hide, 'translate-y-6': hide}"
+          >
             <h2
-              class="text-white outlined font-black leading-none text-center max-w-96 default-transitions ease-bounce opacity-0 translate-y-6 text-3xl"
-              x-data="{hide:true}"
-              x-intersect.once="hide=false"
-              :class="{'opacity-0': hide, 'translate-y-6': hide}"
+              class="origin-top-left scale-[var(--scale)] text-white outlined font-black leading-none text-center max-w-96 text-3xl"
             >
               A creative coder, <br />coding designer, <br />or somewhere
               inbetween
