@@ -36,6 +36,8 @@ const id = crypto.randomUUID();
 
 <script>
   import Alpine from "alpinejs";
+  import { throttle } from "throttle-debounce";
+  import type { DraggablesObject } from "./DraggableArea.astro";
 
   document.addEventListener("alpine:init", () => {
     Alpine.data("DraggableArea", (id) => ({
@@ -46,30 +48,14 @@ const id = crypto.randomUUID();
       moving: false,
       resizing: false,
       screen: { x: -1, y: -1 },
-      calculateHeight(draggables: {
-        [T: string]: {
-          z: number;
-          id: string;
-          selected: boolean;
-          width: number;
-          height: number;
-          x: number;
-          y: number;
-        };
-      }) {
+      calculateHeight(draggables: DraggablesObject) {
         console.log("<DraggableArea> calculating size");
 
         const allDraggablesEl = this.$el.querySelectorAll(".draggable");
-        let tallestHeight = 0;
         if (Object.keys(draggables).length === allDraggablesEl.length) {
-          for (const $draggable of Object.values(draggables)) {
-            if ($draggable.height && $draggable.y && $draggable.id) {
-              const lowerBound = $draggable.height + $draggable.y;
-              if (tallestHeight < lowerBound) {
-                tallestHeight = lowerBound;
-              }
-            }
-          }
+          const tallestHeight = Math.max(
+            ...Object.values(draggables).map(({ bounds }) => bounds[3][1])
+          );
           if (this.height < tallestHeight + this.heightBuffer) {
             console.log("<DraggableArea> size changed to:", tallestHeight);
             this.height = tallestHeight + this.heightBuffer;
@@ -90,8 +76,14 @@ const id = crypto.randomUUID();
             });
           }
         });
-        this.$watch("draggables", (draggables) => {
-          this.calculateHeight(draggables);
+        this.$watch("draggables", (draggables: DraggablesObject) => {
+          const debouncedFunc = throttle(
+            300,
+            (draggables: DraggablesObject) => {
+              this.calculateHeight(draggables);
+            }
+          );
+          debouncedFunc(draggables);
         });
       },
       endMove() {
@@ -130,7 +122,7 @@ const id = crypto.randomUUID();
           console.log("DraggableArea @touchcancel");
           this.endMove();
         },
-        ["@touchmove.passive.throttle.16ms"](event: TouchEvent) {
+        ["@touchmove.throttle.16ms"](event: TouchEvent) {
           if (this.moving) {
             console.log("DraggableArea @touchmove moving");
             this.screen = {
