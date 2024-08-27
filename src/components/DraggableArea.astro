@@ -48,23 +48,26 @@ const id = crypto.randomUUID();
           for (const $draggable of Object.values(draggables)) {
             if ($draggable.height && $draggable.y && $draggable.id) {
               const lowerBound = $draggable.height + $draggable.y;
-              console.log($draggable.id, lowerBound);
               if (tallestHeight < lowerBound) {
                 tallestHeight = lowerBound;
               }
             }
           }
           if (this.height < tallestHeight + this.heightBuffer) {
-            console.log("!!! change tallest:", tallestHeight);
+            console.log("<DraggableArea> size changed to:", tallestHeight);
             this.height = tallestHeight + this.heightBuffer;
             this.$dispatch("viewportScreenChangeHeight", this.height);
+          } else {
+            console.log("<DraggableArea> unchanged:", this.height);
           }
+        } else {
+          console.log("<DraggableArea> unchanged:", this.height);
+          console.log(Object.keys(draggables).length, allDraggablesEl.length);
         }
       },
       init() {
         this.$watch("resizing", (isResizing) => {
           if (isResizing === false && this.moving === false) {
-            console.log(34);
             this.$dispatch("cursorChange", {
               className: { remove: ["cursor--hidden"] },
             });
@@ -88,13 +91,13 @@ const id = crypto.randomUUID();
       area: {
         ["@pointerdown.self"]() {
           console.log("DraggableArea @pointerdown");
-          this.$dispatch("draggable.cancel", { areaID: this.draggableAreaID });
         },
         ["@touchstart"]() {
           console.log("DraggableArea @touchstart");
           this.$dispatch("draggable.cancel", { areaID: this.draggableAreaID });
         },
         ["@pointerup.debounce.32ms.passive"]() {
+          this.$dispatch("draggable.cancel", { areaID: this.draggableAreaID });
           console.log("DraggableArea @pointerup");
           this.endMove();
         },

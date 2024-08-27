@@ -10,6 +10,7 @@ interface Props {
   height?: number;
   locked?: boolean;
   controlPadding?: number;
+  debug?: boolean;
 }
 
 let {
@@ -21,6 +22,7 @@ let {
   height = 0,
   locked = false,
   controlPadding = 8,
+  debug = false,
 } = Astro.props;
 
 const options = {
@@ -32,6 +34,7 @@ const options = {
   height,
   locked,
   controlPadding,
+  debug,
 };
 ---
 
@@ -90,6 +93,7 @@ const options = {
         height,
         locked,
         controlPadding,
+        debug,
       }: {
         minSize: boolean;
         x: number;
@@ -99,7 +103,9 @@ const options = {
         height: number;
         locked: boolean;
         controlPadding: number;
+        debug: boolean;
       }) => ({
+        debug,
         locked,
         minSize,
         draggableId: id,
@@ -112,6 +118,18 @@ const options = {
         size: { x: width, y: height },
         cachedMinSize: { x: 0, y: 0 },
         screenCoordinates: { x: 0, y: 0 },
+        updateDraggablesArray() {
+          // @ts-ignore
+          this.draggables[this.draggableId] = {
+            z: this.zIndex,
+            id: this.draggableId,
+            selected: this.selected,
+            width: this.size.x,
+            height: this.size.y,
+            x: this.coordinates.x,
+            y: this.coordinates.y,
+          };
+        },
         init() {
           if (this.locked) this.selected = true;
 
@@ -223,6 +241,7 @@ const options = {
                   y: this.coordinates.y + delta.y,
                 };
               }
+              this.updateDraggablesArray();
             } else if (
               this.selected &&
               // @ts-ignore
@@ -235,33 +254,84 @@ const options = {
 
           this.$watch("size", (size, oldSize) => {
             if (oldSize.y.toFixed(2) !== size.y.toFixed(2)) {
-              console.log(237, "resized!", oldSize.y, size.y);
-              // @ts-ignore
-              this.draggables[this.draggableId] = {
-                z: 0,
-                id: this.draggableId,
-                selected: this.selected,
-                width: size.x,
-                height: size.y,
-                x: this.coordinates.x,
-                y: this.coordinates.y,
-              };
+              if (this.debug) {
+                console.log(
+                  this.draggableId,
+                  "size changed from",
+                  JSON.stringify(oldSize),
+                  "to",
+                  JSON.stringify(size)
+                );
+              }
+
+              if (
+                this.minSize &&
+                this.cachedMinSize.x === 0 &&
+                this.cachedMinSize.y === 0 &&
+                this.size.x !== 0 &&
+                this.size.y !== 0 &&
+                this.$refs.content
+              ) {
+                if (this.debug) {
+                  console.log(
+                    this.draggableId,
+                    "set min size",
+                    JSON.stringify(this.size)
+                  );
+                }
+
+                this.$refs.content.style.minWidth = `${this.size.x}px`;
+                this.$refs.content.style.minHeight = `${this.size.y}px`;
+                this.cachedMinSize = { ...this.size };
+              }
+              this.updateDraggablesArray();
             }
           });
 
-          setTimeout(() => {
-            if (this.$refs.content) {
-              this.size = {
-                x: this.$refs.content?.getBoundingClientRect().width || 0,
-                y: this.$refs.content?.getBoundingClientRect().height || 0,
-              };
-              if (this.minSize) {
-                this.$refs.content.style.minWidth = `${this.size.x}px`;
-                this.$refs.content.style.minHeight = `${this.size.y}px`;
-                this.cachedMinSize = this.size;
+          if (this.$refs.content) {
+            if (
+              this.minSize &&
+              this.cachedMinSize.x === 0 &&
+              this.cachedMinSize.y === 0 &&
+              this.size.x !== 0 &&
+              this.size.y !== 0
+            ) {
+              if (this.debug) {
+                console.log(
+                  this.draggableId,
+                  "set min size",
+                  JSON.stringify(this.size)
+                );
               }
+
+              this.$refs.content.style.minWidth = `${this.size.x}px`;
+              this.$refs.content.style.minHeight = `${this.size.y}px`;
+              this.cachedMinSize = { ...this.size };
             }
-          }, 100);
+            // @ts-ignore
+            this.draggables[this.draggableId] = {
+              z: this.zIndex,
+              id: this.draggableId,
+              selected: this.selected,
+              width: this.size.x,
+              height: this.size.y,
+              x: this.coordinates.x,
+              y: this.coordinates.y,
+            };
+
+            // this.size = {
+            //   x: this.$refs.content?.getBoundingClientRect().width || 0,
+            //   y: this.$refs.content?.getBoundingClientRect().height || 0,
+            // };
+
+            // if (this.debug) {
+            //   console.log("new size: ", JSON.stringify(this.size));
+            // }
+          } else {
+            if (this.debug) {
+              console.log(this.draggableId, "no $refs");
+            }
+          }
         },
         content: {
           [":style"]() {
@@ -304,7 +374,7 @@ const options = {
               "--scale": this.scale,
             };
           },
-          ["@draggable-cancel.dot.window"]({
+          ["@draggable-cancel.dot.window.passive"]({
             detail,
           }: {
             detail: { areaID: string; draggableID?: string };
@@ -319,15 +389,22 @@ const options = {
               this.selected = false;
             }
           },
-          ["@keyup.escape.window"]() {
+          ["@keyup.escape.window.passive"]() {
             if (this.locked == false) {
               this.selected = false;
             }
           },
-          ["@pointermove"]() {
-            this.$dispatch("cursorChange", {
-              className: { add: ["cursor--hidden"] },
-            });
+          ["@mouseenter.passive"]() {
+            console.log("Draggable @mouseenter.passive");
+            if (!this.locked) {
+              this.$dispatch("cursorChange", {
+                className: { add: ["cursor--hidden"] },
+              });
+            } else {
+              this.$dispatch("cursorChange", {
+                className: { add: ["eyes--empty", "scale-75"] },
+              });
+            }
           },
           ["@pointerdown"](event: PointerEvent) {
             console.log("Draggable @pointerdown");
@@ -361,7 +438,9 @@ const options = {
             // @ts-ignore
             if (!this.moving) {
               this.$dispatch("cursorChange", {
-                className: { remove: ["cursor--hidden"] },
+                className: {
+                  remove: ["cursor--hidden", "eyes--empty", "scale-75"],
+                },
               });
             }
           },
@@ -400,6 +479,15 @@ const options = {
       -webkit-user-drag: none;
     }
 
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply origin-top-left scale-[var(--scale)];
+    }
+
     &.draggable--selected {
       .draggable-handle {
         @apply opacity-100 visible pointer-events-auto;
@@ -412,6 +500,8 @@ const options = {
 
     &.draggable--locked {
       --handle-size: 20px;
+      @apply hover:cursor-none;
+
       .draggable-handle,
       .draggable-border {
         @apply opacity-100 border-2 border-dashed;
