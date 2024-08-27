@@ -6,19 +6,26 @@ import "../styles/base.css";
 
 interface Props {
   title: string;
+  description?: string;
 }
 
-const { title = "" } = Astro.props;
+const {
+  title = "",
+  description = "Portfolio site of Alfred Lau aka @signorekai, a UI/UX designer & full-stack developer",
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en" class="overscroll-none">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
+    <meta name="description" content={description} />
+    <meta name="og:title" content={title} />
+    <meta name="og:description" content={description} />
+    <meta name="og:image" content="/opengraph.png" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#000" />
