@@ -232,21 +232,29 @@ projects.map(({ data: project, id }) => {
           <a
             href="mailto:signorekai@gmail.com"
             target="_blank"
-            class="text-lg group w-full mx-8 md:w-auto md:mx-0 flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            class="footer-button footer-button--large group"
             rel="noopener noreferrer"
+            @mousemove.passive.stop.throttle.200ms="const rect = $el.getBoundingClientRect(); $dispatch('cursorChange', { className: { add: ['scale-50']}});  $dispatch('cursorFixed', {x: rect.left + 2, y: rect.top}); "
+            @mouseleave.passive="$dispatch('cursorClearInterval'); $dispatch('cursorChange', { className: { remove: ['scale-50']}});"
           >
-            <button class="link-button link-button--green py-2 w-full">
-              <span>Contact me</span>
+            <button
+              class="link-button link-button--green group-hover:cursor-none group-hover:pl-14 py-2 w-full"
+            >
+              <span class="link-button--text">Contact me</span>
               <Arrow className="group-hover:translate-y-0.5" />
             </button>
           </a>
           <a
             href="https://github.com/signorekai"
             target="_blank"
-            class="text-lg group flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            class="footer-button group"
             rel="noopener noreferrer"
+            @mousemove.passive.stop.throttle.200ms="const rect = $el.getBoundingClientRect(); $dispatch('cursorChange', { className: { add: ['scale-50']}});  $dispatch('cursorFixed', {x: rect.left + 2, y: rect.top}); "
+            @mouseleave.passive="$dispatch('cursorClearInterval'); $dispatch('cursorChange', { className: { remove: ['scale-50']}});"
           >
-            <button class="link-button link-button--blue py-2">
+            <button
+              class="link-button link-button--blue py-2 group-hover:cursor-none group-hover:pl-14"
+            >
               <span>Github</span>
               <Arrow className="group-hover:translate-y-0.5" />
             </button>
@@ -254,7 +262,7 @@ projects.map(({ data: project, id }) => {
           <a
             href="https://instagram.com/signorekai"
             target="_blank"
-            class="text-lg group flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150"
+            class="footer-button group"
             rel="noopener noreferrer"
           >
             <button class="link-button link-button--green-electric py-2">

@@ -489,6 +489,14 @@
       @apply origin-center scale-[var(--scale)];
     }
   }
+
+  .footer-button {
+    @apply text-lg flex-align-middle gap-x-2 hover:pl-1 transition-all duration-150;
+
+    &.footer-button--large {
+      @apply w-full mx-8 md:w-auto md:mx-0;
+    }
+  }
 }
 
 @keyframes blink {

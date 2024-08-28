@@ -82,6 +82,7 @@ const id = crypto.randomUUID();
       init() {
         this.checkWidth();
         this.$watch("resizing", (isResizing) => {
+          console.log(85, "$watch resizing");
           if (isResizing === false && this.moving === false) {
             this.$dispatch("cursorChange", {
               className: { remove: ["cursor--hidden"] },
@@ -160,6 +161,11 @@ const id = crypto.randomUUID();
               y: event.screenY,
             };
           }
+        },
+        [":class"]() {
+          return {
+            "!cursor-auto": this.resizing !== false,
+          };
         },
         [":style"]() {
           return {

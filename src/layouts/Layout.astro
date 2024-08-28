@@ -53,7 +53,7 @@ const {
       gtag("config", "G-2GW1VRMN77");
     </script>
     <div
-      class="fixed z-9999 transition-opacity duration-250 -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
+      class="fixed z-9999 transition-opacity duration-250 origin-center -translate-x-40 -translate-y-40 opacity-0 pointer-events-none"
       x-bind="cursor"
       x-data="Cursor"
     >
@@ -85,7 +85,10 @@ const {
 </style>
 
 <script>
-  import type { CursorChangeEventEffects } from "@components/Canvas.astro";
+  import type {
+    CursorChangeEventEffects,
+    CursorFixedEventEffects,
+  } from "@components/Canvas.astro";
   import Alpine from "alpinejs";
 
   if (window.visualViewport) {
@@ -122,12 +125,23 @@ const {
 
     Alpine.data("Cursor", () => ({
       initialised: true,
+      intervalDetails: { start: { x: 0, y: 0 }, end: { x: 0, y: 0 } },
+      interval: false,
       init() {
         this.$el.classList.remove("opacity-0");
         setTimeout(() => {
           this.$el.classList.remove("duration-250", "transition-opacity");
           this.$el.classList.add("duration-0", "transition-transform");
         }, 300);
+      },
+      clearInterval() {
+        // @ts-ignore
+        clearInterval(this.interval);
+        this.interval = false;
+        this.intervalDetails = {
+          start: { x: 0, y: 0 },
+          end: { x: 0, y: 0 },
+        };
       },
       cursorPosition: {
         x: document.documentElement.clientWidth / 2 || 0,
@@ -136,6 +150,7 @@ const {
       throttledListener: null,
       cursor: {
         ["@mousemove.window.throttle.16ms.passive"](e: MouseEvent) {
+          console.log(139);
           if (this.initialised) {
             this.$data.cursorPosition.x = e.clientX;
             this.$data.cursorPosition.y = e.clientY;
@@ -159,6 +174,77 @@ const {
                 this.$el.classList.remove(...detail.className.remove);
               }
             }
+          }
+        },
+        ["@cursor-clear-interval.camel.window"]() {
+          this.clearInterval();
+        },
+        ["@cursor-fixed.camel.window"]({
+          detail,
+        }: CustomEvent<CursorFixedEventEffects>) {
+          if (
+            this.intervalDetails.end.x !== detail.x &&
+            this.intervalDetails.end.y !== detail.y
+          ) {
+            this.clearInterval();
+            this.intervalDetails.start.x = this.cursorPosition.x;
+            this.intervalDetails.start.y = this.cursorPosition.y;
+            this.intervalDetails.end.x = detail.x;
+            this.intervalDetails.end.y = detail.y;
+
+            const duration = 1200;
+            const fps = 60;
+
+            const easing = (x: number): number => {
+              return 1 - Math.pow(1 - x, 5);
+            };
+
+            const animFunc = (step) => {
+              if (step <= duration) {
+                console.log("animating", step / duration);
+                const progress = easing(step / duration);
+                const interval = {
+                  x:
+                    (this.intervalDetails.end.x -
+                      this.intervalDetails.start.x) *
+                    progress,
+                  y:
+                    (this.intervalDetails.end.y -
+                      this.intervalDetails.start.y) *
+                    progress,
+                };
+
+                this.cursorPosition.x =
+                  this.intervalDetails.start.x + interval.x;
+                this.cursorPosition.y =
+                  this.intervalDetails.start.y + interval.y;
+
+                // @ts-ignore
+                this.interval = setTimeout(
+                  animFunc,
+                  duration / fps,
+                  step + duration / fps
+                );
+              } else {
+                console.log("stop animating", step / duration);
+                this.intervalDetails = {
+                  start: { x: 0, y: 0 },
+                  end: { x: 0, y: 0 },
+                };
+                // @ts-ignore
+                clearInterval(this.interval);
+                this.interval = false;
+              }
+            };
+
+            // @ts-ignore
+            this.interval = setTimeout(
+              animFunc,
+              duration / fps,
+              duration / fps
+            );
+          } else {
+            console.log(238);
           }
         },
         [":style"]() {

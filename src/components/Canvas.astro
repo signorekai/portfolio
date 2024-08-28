@@ -15,6 +15,11 @@ export type CursorChangeEventEffects = {
   };
 };
 
+export type CursorFixedEventEffects = {
+  x: number;
+  y: number;
+};
+
 export type Coordinates = { x: number; y: number };
 
 let { className, portfolio } = Astro.props;

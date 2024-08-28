@@ -8,6 +8,9 @@ export default {
 			transitionTimingFunction: {
 				'bounce': 'cubic-bezier(.51,.09,.38,1.34)',
 			},
+			transitionProperty: {
+				'top-left': 'top, left',
+			},
 			keyframes: {
 				'viewport': {
 					'0%': { width: 0, height: 0 },
